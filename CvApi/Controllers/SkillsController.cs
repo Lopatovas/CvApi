@@ -12,48 +12,48 @@ namespace CvApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class SkillsController : ControllerBase
     {
         private readonly CVContext _context;
 
-        public UsersController(CVContext context)
+        public SkillsController(CVContext context)
         {
             _context = context;
         }
 
-        // GET: api/Users
+        // GET: api/Skills
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUserEntities()
+        public async Task<ActionResult<IEnumerable<Skill>>> GetSkillEntities()
         {
-            return await _context.UserEntities.ToListAsync();
+            return await _context.SkillEntities.ToListAsync();
         }
 
-        // GET: api/Users/5
+        // GET: api/Skills/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(long id)
+        public async Task<ActionResult<Skill>> GetSkill(long id)
         {
-            var user = await _context.UserEntities.FindAsync(id);
+            var skill = await _context.SkillEntities.FindAsync(id);
 
-            if (user == null)
+            if (skill == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return skill;
         }
 
-        // PUT: api/Users/5
+        // PUT: api/Skills/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(long id, User user)
+        public async Task<IActionResult> PutSkill(long id, Skill skill)
         {
-            if (id != user.UserID)
+            if (id != skill.SkillID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(skill).State = EntityState.Modified;
 
             try
             {
@@ -61,7 +61,7 @@ namespace CvApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!SkillExists(id))
                 {
                     return NotFound();
                 }
@@ -74,37 +74,37 @@ namespace CvApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
+        // POST: api/Skills
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<Skill>> PostSkill(Skill skill)
         {
-            _context.UserEntities.Add(user);
+            _context.SkillEntities.Add(skill);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.UserID }, user);
+            return CreatedAtAction("GetSkill", new { id = skill.SkillID }, skill);
         }
 
-        // DELETE: api/Users/5
+        // DELETE: api/Skills/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(long id)
+        public async Task<ActionResult<Skill>> DeleteSkill(long id)
         {
-            var user = await _context.UserEntities.FindAsync(id);
-            if (user == null)
+            var skill = await _context.SkillEntities.FindAsync(id);
+            if (skill == null)
             {
                 return NotFound();
             }
 
-            _context.UserEntities.Remove(user);
+            _context.SkillEntities.Remove(skill);
             await _context.SaveChangesAsync();
 
-            return user;
+            return skill;
         }
 
-        private bool UserExists(long id)
+        private bool SkillExists(long id)
         {
-            return _context.UserEntities.Any(e => e.UserID == id);
+            return _context.SkillEntities.Any(e => e.SkillID == id);
         }
     }
 }

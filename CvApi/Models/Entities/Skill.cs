@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CvApi.Models.Entities
 {
     [Table("Skill")]
     public class Skill
     {
+        [Key]
         public long SkillID { get; set; }
+        [Required]
         public string Name { get; set; }
     }
 }

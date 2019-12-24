@@ -12,48 +12,48 @@ namespace CvApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class Experiences1Controller : ControllerBase
     {
         private readonly CVContext _context;
 
-        public UsersController(CVContext context)
+        public Experiences1Controller(CVContext context)
         {
             _context = context;
         }
 
-        // GET: api/Users
+        // GET: api/Experiences1
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUserEntities()
+        public async Task<ActionResult<IEnumerable<Experience>>> GetExperienceEntities()
         {
-            return await _context.UserEntities.ToListAsync();
+            return await _context.ExperienceEntities.ToListAsync();
         }
 
-        // GET: api/Users/5
+        // GET: api/Experiences1/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(long id)
+        public async Task<ActionResult<Experience>> GetExperience(long id)
         {
-            var user = await _context.UserEntities.FindAsync(id);
+            var experience = await _context.ExperienceEntities.FindAsync(id);
 
-            if (user == null)
+            if (experience == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return experience;
         }
 
-        // PUT: api/Users/5
+        // PUT: api/Experiences1/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(long id, User user)
+        public async Task<IActionResult> PutExperience(long id, Experience experience)
         {
-            if (id != user.UserID)
+            if (id != experience.ExperienceID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(experience).State = EntityState.Modified;
 
             try
             {
@@ -61,7 +61,7 @@ namespace CvApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!ExperienceExists(id))
                 {
                     return NotFound();
                 }
@@ -74,37 +74,37 @@ namespace CvApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
+        // POST: api/Experiences1
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<Experience>> PostExperience(Experience experience)
         {
-            _context.UserEntities.Add(user);
+            _context.ExperienceEntities.Add(experience);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.UserID }, user);
+            return CreatedAtAction("GetExperience", new { id = experience.ExperienceID }, experience);
         }
 
-        // DELETE: api/Users/5
+        // DELETE: api/Experiences1/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(long id)
+        public async Task<ActionResult<Experience>> DeleteExperience(long id)
         {
-            var user = await _context.UserEntities.FindAsync(id);
-            if (user == null)
+            var experience = await _context.ExperienceEntities.FindAsync(id);
+            if (experience == null)
             {
                 return NotFound();
             }
 
-            _context.UserEntities.Remove(user);
+            _context.ExperienceEntities.Remove(experience);
             await _context.SaveChangesAsync();
 
-            return user;
+            return experience;
         }
 
-        private bool UserExists(long id)
+        private bool ExperienceExists(long id)
         {
-            return _context.UserEntities.Any(e => e.UserID == id);
+            return _context.ExperienceEntities.Any(e => e.ExperienceID == id);
         }
     }
 }

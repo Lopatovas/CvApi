@@ -12,48 +12,48 @@ namespace CvApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class MessagesController : ControllerBase
     {
         private readonly CVContext _context;
 
-        public UsersController(CVContext context)
+        public MessagesController(CVContext context)
         {
             _context = context;
         }
 
-        // GET: api/Users
+        // GET: api/Messages
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUserEntities()
+        public async Task<ActionResult<IEnumerable<Message>>> GetMessageEntities()
         {
-            return await _context.UserEntities.ToListAsync();
+            return await _context.MessageEntities.ToListAsync();
         }
 
-        // GET: api/Users/5
+        // GET: api/Messages/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(long id)
+        public async Task<ActionResult<Message>> GetMessage(long id)
         {
-            var user = await _context.UserEntities.FindAsync(id);
+            var message = await _context.MessageEntities.FindAsync(id);
 
-            if (user == null)
+            if (message == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return message;
         }
 
-        // PUT: api/Users/5
+        // PUT: api/Messages/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(long id, User user)
+        public async Task<IActionResult> PutMessage(long id, Message message)
         {
-            if (id != user.UserID)
+            if (id != message.MessageID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(message).State = EntityState.Modified;
 
             try
             {
@@ -61,7 +61,7 @@ namespace CvApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!MessageExists(id))
                 {
                     return NotFound();
                 }
@@ -74,37 +74,37 @@ namespace CvApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
+        // POST: api/Messages
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<Message>> PostMessage(Message message)
         {
-            _context.UserEntities.Add(user);
+            _context.MessageEntities.Add(message);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.UserID }, user);
+            return CreatedAtAction("GetMessage", new { id = message.MessageID }, message);
         }
 
-        // DELETE: api/Users/5
+        // DELETE: api/Messages/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(long id)
+        public async Task<ActionResult<Message>> DeleteMessage(long id)
         {
-            var user = await _context.UserEntities.FindAsync(id);
-            if (user == null)
+            var message = await _context.MessageEntities.FindAsync(id);
+            if (message == null)
             {
                 return NotFound();
             }
 
-            _context.UserEntities.Remove(user);
+            _context.MessageEntities.Remove(message);
             await _context.SaveChangesAsync();
 
-            return user;
+            return message;
         }
 
-        private bool UserExists(long id)
+        private bool MessageExists(long id)
         {
-            return _context.UserEntities.Any(e => e.UserID == id);
+            return _context.MessageEntities.Any(e => e.MessageID == id);
         }
     }
 }

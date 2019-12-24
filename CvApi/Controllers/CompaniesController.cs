@@ -12,48 +12,48 @@ namespace CvApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class CompaniesController : ControllerBase
     {
         private readonly CVContext _context;
 
-        public UsersController(CVContext context)
+        public CompaniesController(CVContext context)
         {
             _context = context;
         }
 
-        // GET: api/Users
+        // GET: api/Companies
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUserEntities()
+        public async Task<ActionResult<IEnumerable<Company>>> GetCompanyEntities()
         {
-            return await _context.UserEntities.ToListAsync();
+            return await _context.CompanyEntities.ToListAsync();
         }
 
-        // GET: api/Users/5
+        // GET: api/Companies/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(long id)
+        public async Task<ActionResult<Company>> GetCompany(long id)
         {
-            var user = await _context.UserEntities.FindAsync(id);
+            var company = await _context.CompanyEntities.FindAsync(id);
 
-            if (user == null)
+            if (company == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return company;
         }
 
-        // PUT: api/Users/5
+        // PUT: api/Companies/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(long id, User user)
+        public async Task<IActionResult> PutCompany(long id, Company company)
         {
-            if (id != user.UserID)
+            if (id != company.CompanyID)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(company).State = EntityState.Modified;
 
             try
             {
@@ -61,7 +61,7 @@ namespace CvApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!CompanyExists(id))
                 {
                     return NotFound();
                 }
@@ -74,37 +74,37 @@ namespace CvApi.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
+        // POST: api/Companies
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<Company>> PostCompany(Company company)
         {
-            _context.UserEntities.Add(user);
+            _context.CompanyEntities.Add(company);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.UserID }, user);
+            return CreatedAtAction("GetCompany", new { id = company.CompanyID }, company);
         }
 
-        // DELETE: api/Users/5
+        // DELETE: api/Companies/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(long id)
+        public async Task<ActionResult<Company>> DeleteCompany(long id)
         {
-            var user = await _context.UserEntities.FindAsync(id);
-            if (user == null)
+            var company = await _context.CompanyEntities.FindAsync(id);
+            if (company == null)
             {
                 return NotFound();
             }
 
-            _context.UserEntities.Remove(user);
+            _context.CompanyEntities.Remove(company);
             await _context.SaveChangesAsync();
 
-            return user;
+            return company;
         }
 
-        private bool UserExists(long id)
+        private bool CompanyExists(long id)
         {
-            return _context.UserEntities.Any(e => e.UserID == id);
+            return _context.CompanyEntities.Any(e => e.CompanyID == id);
         }
     }
 }
