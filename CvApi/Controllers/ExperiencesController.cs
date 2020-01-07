@@ -46,7 +46,7 @@ namespace CvApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutExperience(long id, Experience experience)
+        public async Task<IActionResult> PutExperience(long id, [FromBody] Experience experience)
         {
             if (id != experience.ExperienceID)
             {
@@ -78,7 +78,7 @@ namespace CvApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Experience>> PostExperience(Experience experience)
+        public async Task<ActionResult<Experience>> PostExperience([FromBody] Experience experience)
         {
             _context.ExperienceEntities.Add(experience);
             await _context.SaveChangesAsync();

@@ -1,110 +1,134 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using CvApi.Models.Contexts;
 using CvApi.Models.Entities;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using AutoMapper;
+using System.IdentityModel.Tokens.Jwt;
+using CvApi.Services;
+using Microsoft.Extensions.Options;
+using CvApi.Helper;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
+using CvApi.Models;
 
 namespace CvApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
+    [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly CVContext _context;
+        private IUserService _userService;
+        private IMapper _mapper;
+        private readonly AppSettings _appSettings;
 
-        public UsersController(CVContext context)
+        public UsersController(
+            IUserService userService,
+            IMapper mapper,
+            IOptions<AppSettings> appSettings)
         {
-            _context = context;
+            _userService = userService;
+            _mapper = mapper;
+            _appSettings = appSettings.Value;
         }
 
-        // GET: api/Users
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUserEntities()
+        [AllowAnonymous]
+        [HttpPost("Login")]
+        public IActionResult Authenticate([FromBody]UserDTO userDto)
         {
-            return await _context.UserEntities.ToListAsync();
-        }
-
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(long id)
-        {
-            var user = await _context.UserEntities.FindAsync(id);
+            var user = _userService.Authenticate(userDto.Email, userDto.Password);
 
             if (user == null)
-            {
-                return NotFound();
-            }
+                return BadRequest(new { message = "Email or password is incorrect" });
 
-            return user;
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.UserID.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+
+            // return basic user info (without password) and token to store client side
+            return Ok(new
+            {
+                Id = user.UserID,
+                user.Email,
+                FirstName = user.Name,
+                LastName = user.Surname,
+                Token = tokenString
+            });
         }
 
-        // PUT: api/Users/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(long id, User user)
+        [AllowAnonymous]
+        [HttpPost("Register")]
+        public IActionResult Register([FromBody] UserDTO userDto)
         {
-            if (id != user.UserID)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(user).State = EntityState.Modified;
+            // map dto to entity
+            var user = _mapper.Map<User>(userDto);
 
             try
             {
-                await _context.SaveChangesAsync();
+                // save 
+                string resp = _userService.Create(user, userDto.Password);
+                return Ok(resp);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                // return error message if there was an exception
+                return BadRequest(new { message = ex.Message });
             }
-
-            return NoContent();
         }
 
-        // POST: api/Users
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        [HttpGet]
+        public IActionResult GetAll()
         {
-            _context.UserEntities.Add(user);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetUser", new { id = user.UserID }, user);
+            var users = _userService.GetAll();
+            var userDtos = _mapper.Map<IList<UserDTO>>(users);
+            return Ok(userDtos);
         }
 
-        // DELETE: api/Users/5
+        [HttpGet("{id}")]
+        public IActionResult GetById(int id)
+        {
+            var user = _userService.GetById(id);
+            var userDto = _mapper.Map<UserDTO>(user);
+            return Ok(userDto);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Update(int id, [FromBody]UserDTO userDto)
+        {
+            // map dto to entity and set id
+            var user = _mapper.Map<User>(userDto);
+            user.UserID = id;
+
+            try
+            {
+                // save 
+                _userService.Update(user, userDto.Password);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                // return error message if there was an exception
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpDelete("{id}")]
-        public async Task<ActionResult<User>> DeleteUser(long id)
+        public IActionResult Delete(int id)
         {
-            var user = await _context.UserEntities.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            _context.UserEntities.Remove(user);
-            await _context.SaveChangesAsync();
-
-            return user;
-        }
-
-        private bool UserExists(long id)
-        {
-            return _context.UserEntities.Any(e => e.UserID == id);
+            _userService.Delete(id);
+            return Ok();
         }
     }
 }

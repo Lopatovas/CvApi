@@ -46,7 +46,7 @@ namespace CvApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMessage(long id, Message message)
+        public async Task<IActionResult> PutMessage(long id, [FromBody] Message message)
         {
             if (id != message.MessageID)
             {
@@ -78,7 +78,7 @@ namespace CvApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Message>> PostMessage(Message message)
+        public async Task<ActionResult<Message>> PostMessage([FromBody] Message message)
         {
             _context.MessageEntities.Add(message);
             await _context.SaveChangesAsync();

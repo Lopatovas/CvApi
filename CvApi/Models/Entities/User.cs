@@ -8,14 +8,6 @@ namespace CvApi.Models.Entities
     [Table("User")]
     public class User
     {
-        public User()
-        {
-            this.UserSkills = new HashSet<UserSkill>();
-            this.UserExperiences = new HashSet<UserExperience>();
-            this.UserLetters = new HashSet<UserLetters>();
-            this.Messages = new HashSet<Message>();
-            this.Applications = new HashSet<Application>();
-        }
 
         [Key]
         public long UserID { get; set; }
@@ -25,9 +17,15 @@ namespace CvApi.Models.Entities
         public string Surname { get; set; }
         [Required]
         public string Email { get; set; }
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
         public string Phone { get; set; }
+        public string Role { get; set; }
         public string Description { get; set; }
         public string Photo { get; set; }
+        [ForeignKey("Company")]
+        public long? CompanyID { get; set; }
+        public virtual Company Company { get; set; }
 
         public virtual ICollection<Message> Messages { get; set; }
         public virtual ICollection<Application> Applications { get; set; }

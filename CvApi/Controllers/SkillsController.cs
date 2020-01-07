@@ -46,7 +46,7 @@ namespace CvApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutSkill(long id, Skill skill)
+        public async Task<IActionResult> PutSkill(long id, [FromBody] Skill skill)
         {
             if (id != skill.SkillID)
             {
@@ -78,7 +78,7 @@ namespace CvApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Skill>> PostSkill(Skill skill)
+        public async Task<ActionResult<Skill>> PostSkill([FromBody] Skill skill)
         {
             _context.SkillEntities.Add(skill);
             await _context.SaveChangesAsync();

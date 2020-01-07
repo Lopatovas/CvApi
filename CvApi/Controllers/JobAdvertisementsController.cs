@@ -46,7 +46,7 @@ namespace CvApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutJobAdvertisement(long id, JobAdvertisement jobAdvertisement)
+        public async Task<IActionResult> PutJobAdvertisement(long id, [FromBody] JobAdvertisement jobAdvertisement)
         {
             if (id != jobAdvertisement.JobAdvertisementID)
             {
@@ -78,7 +78,7 @@ namespace CvApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<JobAdvertisement>> PostJobAdvertisement(JobAdvertisement jobAdvertisement)
+        public async Task<ActionResult<JobAdvertisement>> PostJobAdvertisement([FromBody] JobAdvertisement jobAdvertisement)
         {
             _context.JobAdvertisementEntities.Add(jobAdvertisement);
             await _context.SaveChangesAsync();

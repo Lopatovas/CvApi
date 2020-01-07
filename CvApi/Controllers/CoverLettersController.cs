@@ -46,7 +46,7 @@ namespace CvApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCoverLetter(long id, CoverLetter coverLetter)
+        public async Task<IActionResult> PutCoverLetter(long id, [FromBody] CoverLetter coverLetter)
         {
             if (id != coverLetter.CoverLetterID)
             {
@@ -78,7 +78,7 @@ namespace CvApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<CoverLetter>> PostCoverLetter(CoverLetter coverLetter)
+        public async Task<ActionResult<CoverLetter>> PostCoverLetter([FromBody] CoverLetter coverLetter)
         {
             _context.CoverLetterEntities.Add(coverLetter);
             await _context.SaveChangesAsync();
