@@ -12,6 +12,8 @@ using CvApi.Helper;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using CvApi.Models;
+using CvApi.Models.DataTransferObject;
+using CvApi.Services.UserService;
 
 namespace CvApi.Controllers
 {

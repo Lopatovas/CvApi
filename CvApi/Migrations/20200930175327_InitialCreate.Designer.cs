@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CvApi.Migrations
 {
     [DbContext(typeof(CVContext))]
-    [Migration("20200107001345_UpdatedUser")]
-    partial class UpdatedUser
+    [Migration("20200930175327_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -69,7 +69,12 @@ namespace CvApi.Migrations
                         .HasColumnType("varchar(100) CHARACTER SET utf8mb4")
                         .HasMaxLength(100);
 
+                    b.Property<long>("UserID")
+                        .HasColumnType("bigint");
+
                     b.HasKey("CoverLetterID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("CoverLetter");
                 });
@@ -94,7 +99,12 @@ namespace CvApi.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<long>("UserID")
+                        .HasColumnType("bigint");
+
                     b.HasKey("ExperienceID");
+
+                    b.HasIndex("UserID");
 
                     b.ToTable("Experience");
                 });
@@ -226,27 +236,6 @@ namespace CvApi.Migrations
                     b.ToTable("JobAdvertisement");
                 });
 
-            modelBuilder.Entity("CvApi.Models.Entities.ResolvingTables.UserExperience", b =>
-                {
-                    b.Property<long>("UserExperienceID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ExperienceID")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("UserID")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("UserExperienceID");
-
-                    b.HasIndex("ExperienceID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("UserExperience");
-                });
-
             modelBuilder.Entity("CvApi.Models.Entities.Skill", b =>
                 {
                     b.Property<long>("SkillID")
@@ -308,27 +297,6 @@ namespace CvApi.Migrations
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("CvApi.Models.Entities.UserLetters", b =>
-                {
-                    b.Property<long>("UserlettersID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("CoverLetterID")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("UserID")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("UserlettersID");
-
-                    b.HasIndex("CoverLetterID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("UserLetter");
-                });
-
             modelBuilder.Entity("CvApi.Models.Entities.UserSkill", b =>
                 {
                     b.Property<long>("UserSkillID")
@@ -351,6 +319,24 @@ namespace CvApi.Migrations
                     b.HasIndex("UserID");
 
                     b.ToTable("UserSkill");
+                });
+
+            modelBuilder.Entity("CvApi.Models.Entities.CoverLetter", b =>
+                {
+                    b.HasOne("CvApi.Models.Entities.User", null)
+                        .WithMany("CoverLetters")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CvApi.Models.Entities.Experience", b =>
+                {
+                    b.HasOne("CvApi.Models.Entities.User", null)
+                        .WithMany("UserExperiences")
+                        .HasForeignKey("UserID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("CvApi.Models.Entities.JobSkill", b =>
@@ -413,41 +399,11 @@ namespace CvApi.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CvApi.Models.Entities.ResolvingTables.UserExperience", b =>
-                {
-                    b.HasOne("CvApi.Models.Entities.Experience", "Experience")
-                        .WithMany()
-                        .HasForeignKey("ExperienceID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CvApi.Models.Entities.User", "User")
-                        .WithMany("UserExperiences")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("CvApi.Models.Entities.User", b =>
                 {
                     b.HasOne("CvApi.Models.Entities.Company", "Company")
                         .WithMany()
                         .HasForeignKey("CompanyID");
-                });
-
-            modelBuilder.Entity("CvApi.Models.Entities.UserLetters", b =>
-                {
-                    b.HasOne("CvApi.Models.Entities.CoverLetter", "CoverLetter")
-                        .WithMany()
-                        .HasForeignKey("CoverLetterID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CvApi.Models.Entities.User", "User")
-                        .WithMany("UserLetters")
-                        .HasForeignKey("UserID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("CvApi.Models.Entities.UserSkill", b =>

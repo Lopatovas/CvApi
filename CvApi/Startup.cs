@@ -13,6 +13,9 @@ using CvApi.Services;
 using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using AutoMapper;
+using CvApi.Services.UserService;
+using CvApi.Services.CompanyService;
+using CvApi.Services.SkillsService;
 
 namespace CvApi
 {
@@ -21,7 +24,7 @@ namespace CvApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-        }
+        } 
 
         public IConfiguration Configuration { get; }
 
@@ -75,6 +78,8 @@ namespace CvApi
             });
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICompanyService, CompanyService>();
+            services.AddScoped<ISkillsService, SkillsService>();
 
         }
 

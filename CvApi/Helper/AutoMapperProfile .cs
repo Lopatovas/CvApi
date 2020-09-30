@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using CvApi.Models;
+using CvApi.Models.DataTransferObject;
 using CvApi.Models.Entities;
 
 namespace CvApi.Helper

@@ -5,33 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20200106234833_UpdatedUser.cs" />
-    <Compile Remove="Migrations\20200106234833_UpdatedUser.Designer.cs" />
-    <Compile Remove="Migrations\20200106235029_UpdatedUser.cs" />
-    <Compile Remove="Migrations\20200106235029_UpdatedUser.Designer.cs" />
-    <Compile Remove="Migrations\20200106235455_UpdatedUser.cs" />
-    <Compile Remove="Migrations\20200106235455_UpdatedUser.Designer.cs" />
-    <Compile Remove="Migrations\20200106235615_UpdatedUser.cs" />
-    <Compile Remove="Migrations\20200106235615_UpdatedUser.Designer.cs" />
-    <Compile Remove="Migrations\20200106235839_UpdatedUser.cs" />
-    <Compile Remove="Migrations\20200106235839_UpdatedUser.Designer.cs" />
-    <Compile Remove="Migrations\20200107000050_UpdatedUser.cs" />
-    <Compile Remove="Migrations\20200107000050_UpdatedUser.Designer.cs" />
-    <Compile Remove="Migrations\20200107000222_UpdatedUser.cs" />
-    <Compile Remove="Migrations\20200107000222_UpdatedUser.Designer.cs" />
-    <Compile Remove="Migrations\20200107000342_UpdatedUser.cs" />
-    <Compile Remove="Migrations\20200107000342_UpdatedUser.Designer.cs" />
-    <Compile Remove="Migrations\20200107000423_UpdatedUser.cs" />
-    <Compile Remove="Migrations\20200107000423_UpdatedUser.Designer.cs" />
-    <Compile Remove="Migrations\20200107000531_UpdatedUser.cs" />
-    <Compile Remove="Migrations\20200107000531_UpdatedUser.Designer.cs" />
-    <Compile Remove="Migrations\20200107000942_UpdatedUser.cs" />
-    <Compile Remove="Migrations\20200107000942_UpdatedUser.Designer.cs" />
-    <Compile Remove="Migrations\20200107001140_UpdatedUser.cs" />
-    <Compile Remove="Migrations\20200107001140_UpdatedUser.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.0">

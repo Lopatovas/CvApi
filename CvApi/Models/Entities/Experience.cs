@@ -15,5 +15,7 @@ namespace CvApi.Models.Entities
         public DateTime DateTo { get; set; }
         [Required, MaxLength(100)]
         public string CompanyName { get; set; }
+        [ForeignKey("User")]
+        public long UserID { get; set; }
     }
 }

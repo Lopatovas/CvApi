@@ -9,11 +9,17 @@ namespace CvApi.Models.Entities
     {
         [Key]
         public long CoverLetterID { get; set; }
+
         [Required, MaxLength(100)]
         public string Title { get; set; }
+
         [Required]
         public DateTime CreatedAt { get; set; }
+
         [Required]
         public string Content { get; set; }
+
+        [ForeignKey("User")]
+        public long UserID { get; set; }
     }
 }

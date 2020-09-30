@@ -4,21 +4,11 @@ using System.Linq;
 using CvApi.Models.Entities;
 using CvApi.Models.Contexts;
 
-namespace CvApi.Services
+namespace CvApi.Services.UserService
 {
-    public interface IUserService
-    {
-        User Authenticate(string email, string password);
-        IEnumerable<User> GetAll();
-        User GetById(int id);
-        string Create(User user, string password);
-        void Update(User user, string password = null);
-        void Delete(int id);
-    }
-
     public class UserService : IUserService
     {
-        private CVContext _context;
+        private readonly CVContext _context;
 
         public UserService(CVContext context)
         {

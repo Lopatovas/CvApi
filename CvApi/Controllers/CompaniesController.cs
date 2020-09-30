@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CvApi.Models.Contexts;
 using CvApi.Models.Entities;
+using CvApi.Services.CompanyService;
 
 namespace CvApi.Controllers
 {
@@ -14,97 +15,74 @@ namespace CvApi.Controllers
     [ApiController]
     public class CompaniesController : ControllerBase
     {
-        private readonly CVContext _context;
+        private readonly ICompanyService _companyService;
 
-        public CompaniesController(CVContext context)
+        public CompaniesController(ICompanyService companyService)
         {
-            _context = context;
+            _companyService = companyService;
         }
 
-        // GET: api/Companies
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Company>>> GetCompanyEntities()
+        public IActionResult GetCompanyEntities()
         {
-            return await _context.CompanyEntities.ToListAsync();
+            var companies = _companyService.GetCompanies();
+            return Ok(companies);
         }
 
         // GET: api/Companies/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Company>> GetCompany(long id)
+        public IActionResult GetCompany(long id)
         {
-            var company = await _context.CompanyEntities.FindAsync(id);
-
-            if (company == null)
+            try
+            {
+                var company = _companyService.GetCompanyById(id);
+                return Ok(company);
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-
-            return company;
         }
 
-        // PUT: api/Companies/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCompany(long id, [FromBody] Company company)
+        public IActionResult PutCompany(long id, [FromBody] Company company)
         {
-            if (id != company.CompanyID)
+            try
+            {
+                _companyService.UpdateCompany(id, company);
+            }
+            catch (ArgumentException)
             {
                 return BadRequest();
             }
-
-            _context.Entry(company).State = EntityState.Modified;
-
-            try
+            catch (InvalidOperationException)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CompanyExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
             return NoContent();
         }
 
-        // POST: api/Companies
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Company>> PostCompany([FromBody] Company company)
+        public IActionResult PostCompany([FromBody] Company company)
         {
-            _context.CompanyEntities.Add(company);
-            await _context.SaveChangesAsync();
+            _companyService.CreateCompany(company);
 
             return CreatedAtAction("GetCompany", new { id = company.CompanyID }, company);
         }
 
         // DELETE: api/Companies/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Company>> DeleteCompany(long id)
+        public IActionResult DeleteCompany(long id)
         {
-            var company = await _context.CompanyEntities.FindAsync(id);
-            if (company == null)
+            try
+            {
+                _companyService.DeleteCompany(id);
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-
-            _context.CompanyEntities.Remove(company);
-            await _context.SaveChangesAsync();
-
-            return company;
-        }
-
-        private bool CompanyExists(long id)
-        {
-            return _context.CompanyEntities.Any(e => e.CompanyID == id);
+            return Ok();
         }
     }
 }

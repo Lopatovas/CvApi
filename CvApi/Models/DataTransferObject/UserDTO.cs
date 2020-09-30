@@ -1,4 +1,4 @@
-﻿namespace CvApi.Models
+﻿namespace CvApi.Models.DataTransferObject
 {
     public class UserDTO
     {

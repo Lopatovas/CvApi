@@ -19,8 +19,6 @@ namespace CvApi.Models.Contexts
         public DbSet<Skill> SkillEntities { get; set; }
         public DbSet<Application> ApplicationEntities { get; set; }
         public DbSet<JobSkill> JobSkillEntities { get; set; }
-        public DbSet<UserExperience> UserExperienceEntities { get; set; }
-        public DbSet<UserLetters> UserLettersEntities { get; set; }
         public DbSet<UserSkill> UserSkillEntities { get; set; }
     }
 }
