@@ -1,10 +1,9 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CvApi.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,8 +11,7 @@ namespace CvApi.Migrations
                 name: "Company",
                 columns: table => new
                 {
-                    CompanyID = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CompanyID = table.Column<Guid>(nullable: false),
                     Title = table.Column<string>(maxLength: 100, nullable: false),
                     Description = table.Column<string>(nullable: true),
                     Address = table.Column<string>(maxLength: 100, nullable: false),
@@ -29,8 +27,7 @@ namespace CvApi.Migrations
                 name: "Skill",
                 columns: table => new
                 {
-                    SkillID = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    SkillID = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
@@ -42,8 +39,7 @@ namespace CvApi.Migrations
                 name: "JobAdvertisement",
                 columns: table => new
                 {
-                    JobAdvertisementID = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    JobAdvertisementID = table.Column<Guid>(nullable: false),
                     Title = table.Column<string>(maxLength: 100, nullable: false),
                     Description = table.Column<string>(nullable: false),
                     ContactEmail = table.Column<string>(maxLength: 100, nullable: false),
@@ -52,7 +48,7 @@ namespace CvApi.Migrations
                     City = table.Column<string>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     EndsAt = table.Column<DateTime>(nullable: false),
-                    CompanyID = table.Column<long>(nullable: false)
+                    CompanyID = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -69,8 +65,7 @@ namespace CvApi.Migrations
                 name: "User",
                 columns: table => new
                 {
-                    UserID = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserID = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     Surname = table.Column<string>(nullable: false),
                     Email = table.Column<string>(nullable: false),
@@ -79,8 +74,7 @@ namespace CvApi.Migrations
                     Phone = table.Column<string>(nullable: true),
                     Role = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    Photo = table.Column<string>(nullable: true),
-                    CompanyID = table.Column<long>(nullable: true)
+                    CompanyID = table.Column<Guid>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -97,11 +91,10 @@ namespace CvApi.Migrations
                 name: "JobSkill",
                 columns: table => new
                 {
-                    JobSkillID = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    JobSkillID = table.Column<Guid>(nullable: false),
                     Experience = table.Column<double>(nullable: false),
-                    SkillID = table.Column<long>(nullable: false),
-                    JobAdvertisementID = table.Column<long>(nullable: false)
+                    SkillID = table.Column<Guid>(nullable: false),
+                    JobAdvertisementID = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -124,12 +117,11 @@ namespace CvApi.Migrations
                 name: "CoverLetter",
                 columns: table => new
                 {
-                    CoverLetterID = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CoverLetterID = table.Column<Guid>(nullable: false),
                     Title = table.Column<string>(maxLength: 100, nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     Content = table.Column<string>(nullable: false),
-                    UserID = table.Column<long>(nullable: false)
+                    UserID = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -146,13 +138,12 @@ namespace CvApi.Migrations
                 name: "Experience",
                 columns: table => new
                 {
-                    ExperienceID = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ExperienceID = table.Column<Guid>(nullable: false),
                     Description = table.Column<string>(nullable: true),
                     DateFrom = table.Column<DateTime>(nullable: false),
                     DateTo = table.Column<DateTime>(nullable: false),
                     CompanyName = table.Column<string>(maxLength: 100, nullable: false),
-                    UserID = table.Column<long>(nullable: false)
+                    UserID = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -166,42 +157,13 @@ namespace CvApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Message",
-                columns: table => new
-                {
-                    MessageID = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    Content = table.Column<string>(nullable: false),
-                    UserID = table.Column<long>(nullable: false),
-                    CompanyID = table.Column<long>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Message", x => x.MessageID);
-                    table.ForeignKey(
-                        name: "FK_Message_Company_CompanyID",
-                        column: x => x.CompanyID,
-                        principalTable: "Company",
-                        principalColumn: "CompanyID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Message_User_UserID",
-                        column: x => x.UserID,
-                        principalTable: "User",
-                        principalColumn: "UserID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserSkill",
                 columns: table => new
                 {
-                    UserSkillID = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserSkillID = table.Column<Guid>(nullable: false),
                     Experience = table.Column<double>(nullable: false),
-                    SkillID = table.Column<long>(nullable: false),
-                    UserID = table.Column<long>(nullable: false)
+                    SkillID = table.Column<Guid>(nullable: false),
+                    UserID = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -224,11 +186,10 @@ namespace CvApi.Migrations
                 name: "Application",
                 columns: table => new
                 {
-                    ApplicationID = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserID = table.Column<long>(nullable: false),
-                    JobAdvertisementID = table.Column<long>(nullable: false),
-                    CoverLetterID = table.Column<long>(nullable: false),
+                    ApplicationID = table.Column<Guid>(nullable: false),
+                    UserID = table.Column<Guid>(nullable: false),
+                    JobAdvertisementID = table.Column<Guid>(nullable: false),
+                    CoverLetterID = table.Column<Guid>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
@@ -295,16 +256,6 @@ namespace CvApi.Migrations
                 column: "SkillID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Message_CompanyID",
-                table: "Message",
-                column: "CompanyID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Message_UserID",
-                table: "Message",
-                column: "UserID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_User_CompanyID",
                 table: "User",
                 column: "CompanyID");
@@ -330,9 +281,6 @@ namespace CvApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "JobSkill");
-
-            migrationBuilder.DropTable(
-                name: "Message");
 
             migrationBuilder.DropTable(
                 name: "UserSkill");

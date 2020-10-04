@@ -15,7 +15,6 @@ namespace CvApi.Models.Contexts
         public DbSet<CoverLetter> CoverLetterEntities { get; set; }
         public DbSet<Experience> ExperienceEntities { get; set; }
         public DbSet<JobAdvertisement> JobAdvertisementEntities { get; set; }
-        public DbSet<Message> MessageEntities { get; set; }
         public DbSet<Skill> SkillEntities { get; set; }
         public DbSet<Application> ApplicationEntities { get; set; }
         public DbSet<JobSkill> JobSkillEntities { get; set; }

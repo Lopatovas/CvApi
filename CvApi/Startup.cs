@@ -1,21 +1,20 @@
+using AutoMapper;
+using CvApi.Helper;
+using CvApi.Models.Contexts;
+using CvApi.Services.CompanyService;
+using CvApi.Services.SkillsService;
+using CvApi.Services.UserService;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Cors;
-using CvApi.Models.Contexts;
-using Microsoft.EntityFrameworkCore;
-using CvApi.Helper;
-using System.Text;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using CvApi.Services;
-using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
-using AutoMapper;
-using CvApi.Services.UserService;
-using CvApi.Services.CompanyService;
-using CvApi.Services.SkillsService;
+using System;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace CvApi
 {
@@ -24,7 +23,7 @@ namespace CvApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-        } 
+        }
 
         public IConfiguration Configuration { get; }
 
@@ -56,7 +55,7 @@ namespace CvApi
                     OnTokenValidated = context =>
                     {
                         var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                        var userId = int.Parse(context.Principal.Identity.Name);
+                        var userId = new Guid(context.Principal.Identity.Name);
                         var user = userService.GetById(userId);
                         if (user == null)
                         {
@@ -80,6 +79,7 @@ namespace CvApi
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ISkillsService, SkillsService>();
+            services.AddSwaggerDocument();
 
         }
 
@@ -93,7 +93,7 @@ namespace CvApi
 
             app.UseCors(
                 options => options.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader()
-            );;
+            ); ;
 
             app.UseHttpsRedirection();
 
@@ -105,6 +105,9 @@ namespace CvApi
             {
                 endpoints.MapControllers();
             });
+
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
         }
     }
 }

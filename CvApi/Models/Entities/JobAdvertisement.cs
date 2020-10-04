@@ -14,7 +14,7 @@ namespace CvApi.Models.Entities.ResolvingTables
             this.Applications = new HashSet<Application>();
         }
         [Key]
-        public long JobAdvertisementID { get; set; }
+        public Guid JobAdvertisementID { get; set; }
         [Required, MaxLength(100)]
         public string Title { get; set; }
         [Required]
@@ -34,7 +34,7 @@ namespace CvApi.Models.Entities.ResolvingTables
 
         public DateTime EndsAt { get; set; }
         [Required]
-        public long CompanyID { get; set; }
+        public Guid CompanyID { get; set; }
 
         public virtual Company Company { get; set; }
         public virtual ICollection<JobSkill> JobSkills { get; set; }

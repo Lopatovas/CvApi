@@ -1,12 +1,11 @@
-﻿using System;
+﻿using CvApi.Models.Contexts;
+using CvApi.Models.Entities.ResolvingTables;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using CvApi.Models.Contexts;
-using CvApi.Models.Entities.ResolvingTables;
 
 namespace CvApi.Controllers
 {
@@ -30,7 +29,7 @@ namespace CvApi.Controllers
 
         // GET: api/JobAdvertisements/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<JobAdvertisement>> GetJobAdvertisement(long id)
+        public async Task<ActionResult<JobAdvertisement>> GetJobAdvertisement(Guid id)
         {
             var jobAdvertisement = await _context.JobAdvertisementEntities.FindAsync(id);
 
@@ -46,7 +45,7 @@ namespace CvApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutJobAdvertisement(long id, [FromBody] JobAdvertisement jobAdvertisement)
+        public async Task<IActionResult> PutJobAdvertisement(Guid id, [FromBody] JobAdvertisement jobAdvertisement)
         {
             if (id != jobAdvertisement.JobAdvertisementID)
             {
@@ -88,7 +87,7 @@ namespace CvApi.Controllers
 
         // DELETE: api/JobAdvertisements/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<JobAdvertisement>> DeleteJobAdvertisement(long id)
+        public async Task<ActionResult<JobAdvertisement>> DeleteJobAdvertisement(Guid id)
         {
             var jobAdvertisement = await _context.JobAdvertisementEntities.FindAsync(id);
             if (jobAdvertisement == null)
@@ -102,7 +101,7 @@ namespace CvApi.Controllers
             return jobAdvertisement;
         }
 
-        private bool JobAdvertisementExists(long id)
+        private bool JobAdvertisementExists(Guid id)
         {
             return _context.JobAdvertisementEntities.Any(e => e.JobAdvertisementID == id);
         }

@@ -1,10 +1,11 @@
-﻿using CvApi.Models.Contexts;
+﻿using AutoMapper;
+using CvApi.Models.Contexts;
+using CvApi.Models.DataTransferObject;
 using CvApi.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace CvApi.Services.CompanyService
 {
@@ -12,13 +13,15 @@ namespace CvApi.Services.CompanyService
     {
 
         private readonly CVContext _context;
+        private readonly IMapper _mapper;
 
-        public CompanyService(CVContext context)
+        public CompanyService(CVContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public void DeleteCompany(long id)
+        public void DeleteCompany(Guid id)
         {
             var company = _context.CompanyEntities.Find(id);
             if (company == null)
@@ -30,13 +33,14 @@ namespace CvApi.Services.CompanyService
             _context.SaveChanges();
         }
 
-        public IList<Company> GetCompanies()
+        public IList<CompanyDTO> GetCompanies()
         {
             var response = _context.CompanyEntities.ToList();
-            return response;
+            var mapped = _mapper.Map<IList<CompanyDTO>>(response);
+            return mapped;
         }
 
-        public Company GetCompanyById(long id)
+        public CompanyDTO GetCompanyById(Guid id)
         {
             var company = _context.CompanyEntities.Find(id);
 
@@ -45,21 +49,25 @@ namespace CvApi.Services.CompanyService
                 throw new KeyNotFoundException();
             }
 
-            return company;
+            var mapped = _mapper.Map<CompanyDTO>(company);
+
+            return mapped;
         }
 
-        public void UpdateCompany(long id, Company company)
+        public void UpdateCompany(Guid id, CompanyDTO company)
         {
             if (id != company.CompanyID)
             {
                 throw new ArgumentException();
             }
 
-            _context.Entry(company).State = EntityState.Modified;
+            var mapped = _mapper.Map<Company>(company);
+
+            _context.Entry(mapped).State = EntityState.Modified;
 
             try
             {
-               _context.SaveChanges();
+                _context.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -70,13 +78,14 @@ namespace CvApi.Services.CompanyService
             }
         }
 
-        public void CreateCompany(Company company)
+        public void CreateCompany(CompanyDTO company)
         {
-            _context.CompanyEntities.Add(company);
+            var mapped = _mapper.Map<Company>(company);
+            _context.CompanyEntities.Add(mapped);
             _context.SaveChanges();
         }
 
-        private bool CompanyExists(long id)
+        private bool CompanyExists(Guid id)
         {
             return _context.CompanyEntities.Any(e => e.CompanyID == id);
         }

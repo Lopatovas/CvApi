@@ -1,21 +1,19 @@
-﻿using CvApi.Models.Entities;
+﻿using CvApi.Models.DataTransferObject;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CvApi.Services.CompanyService
 {
     public interface ICompanyService
     {
-        public IList<Company> GetCompanies();
+        public IList<CompanyDTO> GetCompanies();
 
-        public Company GetCompanyById(long id);
+        public CompanyDTO GetCompanyById(Guid id);
 
-        public void UpdateCompany(long id, Company company);
+        public void UpdateCompany(Guid id, CompanyDTO company);
 
-        public void CreateCompany(Company company);
+        public void CreateCompany(CompanyDTO company);
 
-        public void DeleteCompany(long id);
+        public void DeleteCompany(Guid id);
     }
 }

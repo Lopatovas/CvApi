@@ -5,38 +5,38 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CvApi.Services.SkillsService
+namespace CvApi.Services.UserSkillsService
 {
-    public class SkillsService : ISkillsService
+    public class UserSkillsService : IUserSkillsService
     {
         private readonly CVContext _context;
 
-        public SkillsService(CVContext context)
+        public UserSkillsService(CVContext context)
         {
             _context = context;
         }
 
-        public void CreateSkill(Skill skill)
+        public void CreateSkill(UserSkill userSkill)
         {
-            _context.SkillEntities.Add(skill);
+            _context.UserSkillEntities.Add(userSkill);
             _context.SaveChanges();
         }
 
-        public void DeleteSkill(Guid id)
+        public void DeleteUserSkill(Guid id)
         {
-            var skill = _context.SkillEntities.Find(id);
+            var skill = _context.UserSkillEntities.Find(id);
             if (skill == null)
             {
                 throw new KeyNotFoundException();
             }
 
-            _context.SkillEntities.Remove(skill);
+            _context.UserSkillEntities.Remove(skill);
             _context.SaveChanges();
         }
 
-        public Skill GetSkillById(Guid id)
+        public UserSkill GetSkillById(Guid id)
         {
-            var skill = _context.SkillEntities.Find(id);
+            var skill = _context.UserSkillEntities.Find(id);
 
             if (skill == null)
             {
@@ -46,20 +46,20 @@ namespace CvApi.Services.SkillsService
             return skill;
         }
 
-        public IList<Skill> GetSkills()
+        public IList<UserSkill> GetUserSkills(Guid id)
         {
-            var response = _context.SkillEntities.ToList();
+            var response = _context.UserSkillEntities.Where(item => item.UserID == id).ToList();
             return response;
         }
 
-        public void UpdateSkill(Guid id, Skill skill)
+        public void UpdateSkill(Guid id, UserSkill userSkill)
         {
-            if (id != skill.SkillID)
+            if (id != userSkill.UserSkillID)
             {
                 throw new ArgumentException();
             }
 
-            _context.Entry(skill).State = EntityState.Modified;
+            _context.Entry(userSkill).State = EntityState.Modified;
 
             try
             {
@@ -67,16 +67,16 @@ namespace CvApi.Services.SkillsService
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!SkillExists(id))
+                if (!UserSkillExists(id))
                 {
                     throw new InvalidOperationException();
                 }
             }
         }
 
-        private bool SkillExists(Guid id)
+        private bool UserSkillExists(Guid id)
         {
-            return _context.SkillEntities.Any(e => e.SkillID == id);
+            return _context.UserSkillEntities.Any(e => e.UserSkillID == id);
         }
     }
 }

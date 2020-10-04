@@ -9,21 +9,21 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CvApi.Migrations
 {
     [DbContext(typeof(CVContext))]
-    [Migration("20200930175327_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20201004124140_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.0")
+                .HasAnnotation("ProductVersion", "3.1.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("CvApi.Models.Entities.Company", b =>
                 {
-                    b.Property<long>("CompanyID")
+                    b.Property<Guid>("CompanyID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -53,9 +53,9 @@ namespace CvApi.Migrations
 
             modelBuilder.Entity("CvApi.Models.Entities.CoverLetter", b =>
                 {
-                    b.Property<long>("CoverLetterID")
+                    b.Property<Guid>("CoverLetterID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Content")
                         .IsRequired()
@@ -69,8 +69,8 @@ namespace CvApi.Migrations
                         .HasColumnType("varchar(100) CHARACTER SET utf8mb4")
                         .HasMaxLength(100);
 
-                    b.Property<long>("UserID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("CoverLetterID");
 
@@ -81,9 +81,9 @@ namespace CvApi.Migrations
 
             modelBuilder.Entity("CvApi.Models.Entities.Experience", b =>
                 {
-                    b.Property<long>("ExperienceID")
+                    b.Property<Guid>("ExperienceID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("CompanyName")
                         .IsRequired()
@@ -99,8 +99,8 @@ namespace CvApi.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<long>("UserID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("ExperienceID");
 
@@ -111,18 +111,18 @@ namespace CvApi.Migrations
 
             modelBuilder.Entity("CvApi.Models.Entities.JobSkill", b =>
                 {
-                    b.Property<long>("JobSkillID")
+                    b.Property<Guid>("JobSkillID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("char(36)");
 
                     b.Property<double>("Experience")
                         .HasColumnType("double");
 
-                    b.Property<long>("JobAdvertisementID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("JobAdvertisementID")
+                        .HasColumnType("char(36)");
 
-                    b.Property<long>("SkillID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("SkillID")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("JobSkillID");
 
@@ -133,51 +133,23 @@ namespace CvApi.Migrations
                     b.ToTable("JobSkill");
                 });
 
-            modelBuilder.Entity("CvApi.Models.Entities.Message", b =>
-                {
-                    b.Property<long>("MessageID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("CompanyID")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<long>("UserID")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("MessageID");
-
-                    b.HasIndex("CompanyID");
-
-                    b.HasIndex("UserID");
-
-                    b.ToTable("Message");
-                });
-
             modelBuilder.Entity("CvApi.Models.Entities.ResolvingTables.Application", b =>
                 {
-                    b.Property<long>("ApplicationID")
+                    b.Property<Guid>("ApplicationID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("char(36)");
 
-                    b.Property<long>("CoverLetterID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("CoverLetterID")
+                        .HasColumnType("char(36)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<long>("JobAdvertisementID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("JobAdvertisementID")
+                        .HasColumnType("char(36)");
 
-                    b.Property<long>("UserID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("ApplicationID");
 
@@ -192,16 +164,16 @@ namespace CvApi.Migrations
 
             modelBuilder.Entity("CvApi.Models.Entities.ResolvingTables.JobAdvertisement", b =>
                 {
-                    b.Property<long>("JobAdvertisementID")
+                    b.Property<Guid>("JobAdvertisementID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<long>("CompanyID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("CompanyID")
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("ContactEmail")
                         .IsRequired()
@@ -238,9 +210,9 @@ namespace CvApi.Migrations
 
             modelBuilder.Entity("CvApi.Models.Entities.Skill", b =>
                 {
-                    b.Property<long>("SkillID")
+                    b.Property<Guid>("SkillID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -253,12 +225,12 @@ namespace CvApi.Migrations
 
             modelBuilder.Entity("CvApi.Models.Entities.User", b =>
                 {
-                    b.Property<long>("UserID")
+                    b.Property<Guid>("UserID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("char(36)");
 
-                    b.Property<long?>("CompanyID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("CompanyID")
+                        .HasColumnType("char(36)");
 
                     b.Property<string>("Description")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -280,9 +252,6 @@ namespace CvApi.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("Photo")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
                     b.Property<string>("Role")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -299,18 +268,18 @@ namespace CvApi.Migrations
 
             modelBuilder.Entity("CvApi.Models.Entities.UserSkill", b =>
                 {
-                    b.Property<long>("UserSkillID")
+                    b.Property<Guid>("UserSkillID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
+                        .HasColumnType("char(36)");
 
                     b.Property<double>("Experience")
                         .HasColumnType("double");
 
-                    b.Property<long>("SkillID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("SkillID")
+                        .HasColumnType("char(36)");
 
-                    b.Property<long>("UserID")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("UserID")
+                        .HasColumnType("char(36)");
 
                     b.HasKey("UserSkillID");
 
@@ -350,21 +319,6 @@ namespace CvApi.Migrations
                     b.HasOne("CvApi.Models.Entities.Skill", "Skill")
                         .WithMany()
                         .HasForeignKey("SkillID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CvApi.Models.Entities.Message", b =>
-                {
-                    b.HasOne("CvApi.Models.Entities.Company", "Company")
-                        .WithMany("Messages")
-                        .HasForeignKey("CompanyID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("CvApi.Models.Entities.User", "User")
-                        .WithMany("Messages")
-                        .HasForeignKey("UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

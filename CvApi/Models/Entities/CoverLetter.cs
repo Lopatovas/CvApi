@@ -8,7 +8,7 @@ namespace CvApi.Models.Entities
     public class CoverLetter
     {
         [Key]
-        public long CoverLetterID { get; set; }
+        public Guid CoverLetterID { get; set; }
 
         [Required, MaxLength(100)]
         public string Title { get; set; }
@@ -20,6 +20,6 @@ namespace CvApi.Models.Entities
         public string Content { get; set; }
 
         [ForeignKey("User")]
-        public long UserID { get; set; }
+        public Guid UserID { get; set; }
     }
 }

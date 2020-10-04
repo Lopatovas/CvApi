@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using CvApi.Models.Contexts;
-using CvApi.Models.Entities;
+﻿using CvApi.Models.DataTransferObject;
 using CvApi.Services.CompanyService;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 
 namespace CvApi.Controllers
 {
@@ -31,7 +26,7 @@ namespace CvApi.Controllers
 
         // GET: api/Companies/5
         [HttpGet("{id}")]
-        public IActionResult GetCompany(long id)
+        public IActionResult GetCompany(Guid id)
         {
             try
             {
@@ -45,7 +40,7 @@ namespace CvApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult PutCompany(long id, [FromBody] Company company)
+        public IActionResult PutCompany(Guid id, [FromBody] CompanyDTO company)
         {
             try
             {
@@ -63,7 +58,7 @@ namespace CvApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult PostCompany([FromBody] Company company)
+        public IActionResult PostCompany([FromBody] CompanyDTO company)
         {
             _companyService.CreateCompany(company);
 
@@ -72,7 +67,7 @@ namespace CvApi.Controllers
 
         // DELETE: api/Companies/5
         [HttpDelete("{id}")]
-        public IActionResult DeleteCompany(long id)
+        public IActionResult DeleteCompany(Guid id)
         {
             try
             {

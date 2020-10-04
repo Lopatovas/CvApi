@@ -1,8 +1,8 @@
-﻿using System;
+﻿using CvApi.Models.Contexts;
+using CvApi.Models.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using CvApi.Models.Entities;
-using CvApi.Models.Contexts;
 
 namespace CvApi.Services.UserService
 {
@@ -37,7 +37,7 @@ namespace CvApi.Services.UserService
             return _context.UserEntities;
         }
 
-        public User GetById(int id)
+        public User GetById(Guid id)
         {
             return _context.UserEntities.Find(id);
         }
@@ -81,7 +81,6 @@ namespace CvApi.Services.UserService
             user.Surname = userParam.Surname;
             user.Description = userParam.Description;
             user.Phone = userParam.Phone;
-            user.Photo = userParam.Photo;
 
             // update password if it was entered
             if (!string.IsNullOrWhiteSpace(password))
@@ -97,7 +96,7 @@ namespace CvApi.Services.UserService
             _context.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(Guid id)
         {
             var user = _context.UserEntities.Find(id);
             if (user != null)

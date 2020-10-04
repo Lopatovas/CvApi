@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using CvApi.Models.Entities;
+﻿using CvApi.Models.Entities;
+using System;
+using System.Collections.Generic;
 
 namespace CvApi.Services.UserService
 {
@@ -7,9 +8,9 @@ namespace CvApi.Services.UserService
     {
         User Authenticate(string email, string password);
         IEnumerable<User> GetAll();
-        User GetById(int id);
+        User GetById(Guid id);
         string Create(User user, string password);
         void Update(User user, string password = null);
-        void Delete(int id);
+        void Delete(Guid id);
     }
 }

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using CvApi.Models.Contexts;
-using CvApi.Models.Entities;
+﻿using CvApi.Models.Entities;
 using CvApi.Services.SkillsService;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
 
 namespace CvApi.Controllers
 {
@@ -30,7 +25,7 @@ namespace CvApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetSkill(long id)
+        public IActionResult GetSkill(Guid id)
         {
             try
             {
@@ -44,7 +39,7 @@ namespace CvApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult PutSkill(long id, [FromBody] Skill skill)
+        public IActionResult PutSkill(Guid id, [FromBody] Skill skill)
         {
             try
             {
@@ -70,7 +65,7 @@ namespace CvApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteSkill(long id)
+        public IActionResult DeleteSkill(Guid id)
         {
             try
             {

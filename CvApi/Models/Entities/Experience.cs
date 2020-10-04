@@ -8,7 +8,7 @@ namespace CvApi.Models.Entities
     public class Experience
     {
         [Key]
-        public long ExperienceID { get; set; }
+        public Guid ExperienceID { get; set; }
         public string Description { get; set; }
         [Required]
         public DateTime DateFrom { get; set; }
@@ -16,6 +16,6 @@ namespace CvApi.Models.Entities
         [Required, MaxLength(100)]
         public string CompanyName { get; set; }
         [ForeignKey("User")]
-        public long UserID { get; set; }
+        public Guid UserID { get; set; }
     }
 }

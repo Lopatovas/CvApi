@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CvApi.Models.Entities
@@ -7,14 +8,14 @@ namespace CvApi.Models.Entities
     public class UserSkill
     {
         [Key]
-        public long UserSkillID { get; set; }
+        public Guid UserSkillID { get; set; }
         [Required]
         public double Experience { get; set; }
         [Required]
-        public long SkillID { get; set; }
+        public Guid SkillID { get; set; }
         public virtual Skill Skill { get; set; }
         [Required]
-        public long UserID { get; set; }
+        public Guid UserID { get; set; }
         public virtual User User { get; set; }
     }
 }

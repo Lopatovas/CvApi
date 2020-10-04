@@ -1,8 +1,6 @@
 ﻿using CvApi.Models.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CvApi.Services.SkillsService
 {
@@ -10,12 +8,12 @@ namespace CvApi.Services.SkillsService
     {
         public IList<Skill> GetSkills();
 
-        public Skill GetSkillById(long id);
+        public Skill GetSkillById(Guid id);
 
-        public void UpdateSkill(long id, Skill company);
+        public void UpdateSkill(Guid id, Skill skill);
 
-        public void CreateSkill(Skill company);
+        public void CreateSkill(Skill skill);
 
-        public void DeleteSkill(long id);
+        public void DeleteSkill(Guid id);
     }
 }

@@ -1,12 +1,11 @@
-﻿using System;
+﻿using CvApi.Models.Contexts;
+using CvApi.Models.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using CvApi.Models.Contexts;
-using CvApi.Models.Entities;
 
 namespace CvApi.Controllers
 {
@@ -30,7 +29,7 @@ namespace CvApi.Controllers
 
         // GET: api/Experiences/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Experience>> GetExperience(long id)
+        public async Task<ActionResult<Experience>> GetExperience(Guid id)
         {
             var experience = await _context.ExperienceEntities.FindAsync(id);
 
@@ -46,7 +45,7 @@ namespace CvApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutExperience(long id, [FromBody] Experience experience)
+        public async Task<IActionResult> PutExperience(Guid id, [FromBody] Experience experience)
         {
             if (id != experience.ExperienceID)
             {
@@ -88,7 +87,7 @@ namespace CvApi.Controllers
 
         // DELETE: api/Experiences/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Experience>> DeleteExperience(long id)
+        public async Task<ActionResult<Experience>> DeleteExperience(Guid id)
         {
             var experience = await _context.ExperienceEntities.FindAsync(id);
             if (experience == null)
@@ -102,7 +101,7 @@ namespace CvApi.Controllers
             return experience;
         }
 
-        private bool ExperienceExists(long id)
+        private bool ExperienceExists(Guid id)
         {
             return _context.ExperienceEntities.Any(e => e.ExperienceID == id);
         }

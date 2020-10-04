@@ -1,12 +1,11 @@
-﻿using System;
+﻿using CvApi.Models.Contexts;
+using CvApi.Models.Entities;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using CvApi.Models.Contexts;
-using CvApi.Models.Entities;
 
 namespace CvApi.Controllers
 {
@@ -30,7 +29,7 @@ namespace CvApi.Controllers
 
         // GET: api/CoverLetters/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CoverLetter>> GetCoverLetter(long id)
+        public async Task<ActionResult<CoverLetter>> GetCoverLetter(Guid id)
         {
             var coverLetter = await _context.CoverLetterEntities.FindAsync(id);
 
@@ -46,7 +45,7 @@ namespace CvApi.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCoverLetter(long id, [FromBody] CoverLetter coverLetter)
+        public async Task<IActionResult> PutCoverLetter(Guid id, [FromBody] CoverLetter coverLetter)
         {
             if (id != coverLetter.CoverLetterID)
             {
@@ -88,7 +87,7 @@ namespace CvApi.Controllers
 
         // DELETE: api/CoverLetters/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<CoverLetter>> DeleteCoverLetter(long id)
+        public async Task<ActionResult<CoverLetter>> DeleteCoverLetter(Guid id)
         {
             var coverLetter = await _context.CoverLetterEntities.FindAsync(id);
             if (coverLetter == null)
@@ -102,7 +101,7 @@ namespace CvApi.Controllers
             return coverLetter;
         }
 
-        private bool CoverLetterExists(long id)
+        private bool CoverLetterExists(Guid id)
         {
             return _context.CoverLetterEntities.Any(e => e.CoverLetterID == id);
         }

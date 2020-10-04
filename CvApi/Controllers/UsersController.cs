@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using CvApi.Models.Entities;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using AutoMapper;
-using System.IdentityModel.Tokens.Jwt;
-using CvApi.Services;
-using Microsoft.Extensions.Options;
+﻿using AutoMapper;
 using CvApi.Helper;
-using System.Text;
-using Microsoft.IdentityModel.Tokens;
-using CvApi.Models;
 using CvApi.Models.DataTransferObject;
+using CvApi.Models.Entities;
 using CvApi.Services.UserService;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace CvApi.Controllers
 {
@@ -99,7 +97,7 @@ namespace CvApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public IActionResult GetById(Guid id)
         {
             var user = _userService.GetById(id);
             var userDto = _mapper.Map<UserDTO>(user);
@@ -107,7 +105,7 @@ namespace CvApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(int id, [FromBody]UserDTO userDto)
+        public IActionResult Update(Guid id, [FromBody]UserDTO userDto)
         {
             // map dto to entity and set id
             var user = _mapper.Map<User>(userDto);
@@ -127,7 +125,7 @@ namespace CvApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(Guid id)
         {
             _userService.Delete(id);
             return Ok();
