@@ -1,11 +1,9 @@
 ﻿using CvApi.Models.Contexts;
 using CvApi.Models.Entities;
+using CvApi.Services.ExperienceService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CvApi.Controllers
 {
@@ -14,96 +12,67 @@ namespace CvApi.Controllers
     public class ExperiencesController : ControllerBase
     {
         private readonly CVContext _context;
+        private readonly IExperienceService _service;
 
-        public ExperiencesController(CVContext context)
+        public ExperiencesController(CVContext context, IExperienceService service)
         {
             _context = context;
+            _service = service;
         }
 
-        // GET: api/Experiences
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Experience>>> GetExperienceEntities()
-        {
-            return await _context.ExperienceEntities.ToListAsync();
-        }
 
-        // GET: api/Experiences/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Experience>> GetExperience(Guid id)
+        public IActionResult GetExperience(Guid id)
         {
-            var experience = await _context.ExperienceEntities.FindAsync(id);
-
-            if (experience == null)
+            try
+            {
+                var experience = _service.GetExperience(id);
+                return Ok(experience);
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-
-            return experience;
         }
 
-        // PUT: api/Experiences/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutExperience(Guid id, [FromBody] Experience experience)
+        public IActionResult PutExperience(Guid id, [FromBody] Experience experience)
         {
-            if (id != experience.ExperienceID)
+            try
+            {
+                _service.UpdateExperience(id, experience);
+            }
+            catch (ArgumentException)
             {
                 return BadRequest();
             }
-
-            _context.Entry(experience).State = EntityState.Modified;
-
-            try
+            catch (InvalidOperationException)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ExperienceExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
             return NoContent();
         }
 
-        // POST: api/Experiences
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Experience>> PostExperience([FromBody] Experience experience)
+        public IActionResult PostExperience([FromBody] Experience experience)
         {
-            _context.ExperienceEntities.Add(experience);
-            await _context.SaveChangesAsync();
+            _service.CreateExperience(experience);
 
             return CreatedAtAction("GetExperience", new { id = experience.ExperienceID }, experience);
         }
 
-        // DELETE: api/Experiences/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Experience>> DeleteExperience(Guid id)
+        public IActionResult DeleteExperience(Guid id)
         {
-            var experience = await _context.ExperienceEntities.FindAsync(id);
-            if (experience == null)
+            try
+            {
+                _service.DeleteExperience(id);
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-
-            _context.ExperienceEntities.Remove(experience);
-            await _context.SaveChangesAsync();
-
-            return experience;
-        }
-
-        private bool ExperienceExists(Guid id)
-        {
-            return _context.ExperienceEntities.Any(e => e.ExperienceID == id);
+            return Ok();
         }
     }
 }

@@ -7,7 +7,7 @@ namespace CvApi.Services.CoverLetterService
 {
     public interface ICoverLetterService
     {
-        public IList<CoverLetter> GetCoverLetters(Guid id);
+        public IList<CoverLetter> GetCoverLetters();
 
         public CoverLetter GetCoverLetterById(Guid id);
 

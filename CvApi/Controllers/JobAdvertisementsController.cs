@@ -1,11 +1,9 @@
 ﻿using CvApi.Models.Contexts;
 using CvApi.Models.Entities.ResolvingTables;
+using CvApi.Services.JobAdvertisementService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CvApi.Controllers
 {
@@ -14,96 +12,73 @@ namespace CvApi.Controllers
     public class JobAdvertisementsController : ControllerBase
     {
         private readonly CVContext _context;
+        private readonly IJobAdvertisementService _service;
 
-        public JobAdvertisementsController(CVContext context)
+        public JobAdvertisementsController(CVContext context, IJobAdvertisementService service)
         {
             _context = context;
+            _service = service;
         }
 
-        // GET: api/JobAdvertisements
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<JobAdvertisement>>> GetJobAdvertisementEntities()
+        public IActionResult GetJobAdvertisementEntities()
         {
-            return await _context.JobAdvertisementEntities.ToListAsync();
+            var advertisements = _service.GetAdvertisements();
+            return Ok(advertisements);
         }
 
-        // GET: api/JobAdvertisements/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<JobAdvertisement>> GetJobAdvertisement(Guid id)
+        public IActionResult GetJobAdvertisement(Guid id)
         {
-            var jobAdvertisement = await _context.JobAdvertisementEntities.FindAsync(id);
-
-            if (jobAdvertisement == null)
+            try
+            {
+                var advertisement = _service.GetAdvertisementById(id);
+                return Ok(advertisement);
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-
-            return jobAdvertisement;
         }
 
-        // PUT: api/JobAdvertisements/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutJobAdvertisement(Guid id, [FromBody] JobAdvertisement jobAdvertisement)
+        public IActionResult PutJobAdvertisement(Guid id, [FromBody] JobAdvertisement jobAdvertisement)
         {
-            if (id != jobAdvertisement.JobAdvertisementID)
+            try
+            {
+                _service.UpdateAdvertisement(id, jobAdvertisement);
+            }
+            catch (ArgumentException)
             {
                 return BadRequest();
             }
-
-            _context.Entry(jobAdvertisement).State = EntityState.Modified;
-
-            try
+            catch (InvalidOperationException)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!JobAdvertisementExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
             return NoContent();
         }
 
-        // POST: api/JobAdvertisements
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<JobAdvertisement>> PostJobAdvertisement([FromBody] JobAdvertisement jobAdvertisement)
+        public IActionResult PostJobAdvertisement([FromBody] JobAdvertisement jobAdvertisement)
         {
-            _context.JobAdvertisementEntities.Add(jobAdvertisement);
-            await _context.SaveChangesAsync();
+            _service.CreateAdvertisement(jobAdvertisement);
 
             return CreatedAtAction("GetJobAdvertisement", new { id = jobAdvertisement.JobAdvertisementID }, jobAdvertisement);
         }
 
-        // DELETE: api/JobAdvertisements/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<JobAdvertisement>> DeleteJobAdvertisement(Guid id)
+        public IActionResult DeleteJobAdvertisement(Guid id)
         {
-            var jobAdvertisement = await _context.JobAdvertisementEntities.FindAsync(id);
-            if (jobAdvertisement == null)
+            try
+            {
+                _service.DeleteAdvertisement(id);
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-
-            _context.JobAdvertisementEntities.Remove(jobAdvertisement);
-            await _context.SaveChangesAsync();
-
-            return jobAdvertisement;
-        }
-
-        private bool JobAdvertisementExists(Guid id)
-        {
-            return _context.JobAdvertisementEntities.Any(e => e.JobAdvertisementID == id);
+            return Ok();
         }
     }
 }

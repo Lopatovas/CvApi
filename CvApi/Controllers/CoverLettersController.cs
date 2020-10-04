@@ -1,11 +1,9 @@
 ﻿using CvApi.Models.Contexts;
 using CvApi.Models.Entities;
+using CvApi.Services.CoverLetterService;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CvApi.Controllers
 {
@@ -14,96 +12,73 @@ namespace CvApi.Controllers
     public class CoverLettersController : ControllerBase
     {
         private readonly CVContext _context;
+        private readonly ICoverLetterService _service;
 
-        public CoverLettersController(CVContext context)
+        public CoverLettersController(CVContext context, ICoverLetterService service)
         {
             _context = context;
+            _service = service;
         }
 
-        // GET: api/CoverLetters
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CoverLetter>>> GetCoverLetterEntities()
+        public IActionResult GetCoverLetters()
         {
-            return await _context.CoverLetterEntities.ToListAsync();
+            var letters = _service.GetCoverLetters();
+            return Ok(letters);
         }
 
-        // GET: api/CoverLetters/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CoverLetter>> GetCoverLetter(Guid id)
+        public IActionResult GetCoverLetter(Guid id)
         {
-            var coverLetter = await _context.CoverLetterEntities.FindAsync(id);
-
-            if (coverLetter == null)
+            try
+            {
+                var letter = _service.GetCoverLetterById(id);
+                return Ok(letter);
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-
-            return coverLetter;
         }
 
-        // PUT: api/CoverLetters/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCoverLetter(Guid id, [FromBody] CoverLetter coverLetter)
+        public IActionResult PutCoverLetter(Guid id, [FromBody] CoverLetter coverLetter)
         {
-            if (id != coverLetter.CoverLetterID)
+            try
+            {
+                _service.UpdateCoverLetter(id, coverLetter);
+            }
+            catch (ArgumentException)
             {
                 return BadRequest();
             }
-
-            _context.Entry(coverLetter).State = EntityState.Modified;
-
-            try
+            catch (InvalidOperationException)
             {
-                await _context.SaveChangesAsync();
+                return NotFound();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CoverLetterExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
             return NoContent();
         }
 
-        // POST: api/CoverLetters
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<CoverLetter>> PostCoverLetter([FromBody] CoverLetter coverLetter)
+        public IActionResult PostCoverLetter([FromBody] CoverLetter coverLetter)
         {
-            _context.CoverLetterEntities.Add(coverLetter);
-            await _context.SaveChangesAsync();
+            _service.CreateCoverLetter(coverLetter);
 
             return CreatedAtAction("GetCoverLetter", new { id = coverLetter.CoverLetterID }, coverLetter);
         }
 
-        // DELETE: api/CoverLetters/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<CoverLetter>> DeleteCoverLetter(Guid id)
+        public IActionResult DeleteCoverLetter(Guid id)
         {
-            var coverLetter = await _context.CoverLetterEntities.FindAsync(id);
-            if (coverLetter == null)
+            try
+            {
+                _service.DeleteCoverLetter(id);
+            }
+            catch (KeyNotFoundException)
             {
                 return NotFound();
             }
-
-            _context.CoverLetterEntities.Remove(coverLetter);
-            await _context.SaveChangesAsync();
-
-            return coverLetter;
-        }
-
-        private bool CoverLetterExists(Guid id)
-        {
-            return _context.CoverLetterEntities.Any(e => e.CoverLetterID == id);
+            return Ok();
         }
     }
 }

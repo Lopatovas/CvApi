@@ -2,8 +2,13 @@ using AutoMapper;
 using CvApi.Helper;
 using CvApi.Models.Contexts;
 using CvApi.Services.CompanyService;
+using CvApi.Services.CoverLetterService;
+using CvApi.Services.ExperienceService;
+using CvApi.Services.JobAdvertisementService;
+using CvApi.Services.JobSkillsService;
 using CvApi.Services.SkillsService;
 using CvApi.Services.UserService;
+using CvApi.Services.UserSkillsService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -79,7 +84,15 @@ namespace CvApi
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ISkillsService, SkillsService>();
-            services.AddSwaggerDocument();
+            services.AddScoped<ICoverLetterService, CoverLetterService>();
+            services.AddScoped<IExperienceService, ExperienceService>();
+            services.AddScoped<IJobSkillsService, JobSkillsService>();
+            services.AddScoped<IUserSkillsService, UserSkillsService>();
+            services.AddScoped<IJobAdvertisementService, JobAdvertisementService>();
+
+            services.AddSwaggerDocument(config =>
+                { config.Title = "Jobster API"; config.Description = "An API used to manipulate data in the Jobster project"; }
+            );
 
         }
 
