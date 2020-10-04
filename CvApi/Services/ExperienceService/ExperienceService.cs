@@ -18,7 +18,8 @@ namespace CvApi.Services.ExperienceService
 
         public void CreateExperience(Experience experience)
         {
-            throw new NotImplementedException();
+            _context.ExperienceEntities.Add(experience);
+            _context.SaveChangesAsync();
         }
 
         public void DeleteExperience(Guid id)
