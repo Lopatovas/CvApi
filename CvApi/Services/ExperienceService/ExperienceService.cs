@@ -1,4 +1,6 @@
-﻿using CvApi.Models.Contexts;
+﻿using AutoMapper;
+using CvApi.Models.Contexts;
+using CvApi.Models.DataTransferObject;
 using CvApi.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,15 +12,18 @@ namespace CvApi.Services.ExperienceService
     public class ExperienceService : IExperienceService
     {
         private readonly CVContext _context;
+        private readonly IMapper _mapper;
 
-        public ExperienceService(CVContext context)
+        public ExperienceService(CVContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public void CreateExperience(Experience experience)
+        public void CreateExperience(ExperienceDTO experience)
         {
-            _context.ExperienceEntities.Add(experience);
+            var mapped = _mapper.Map<Experience>(experience);
+            _context.ExperienceEntities.Add(mapped);
             _context.SaveChangesAsync();
         }
 
@@ -34,26 +39,29 @@ namespace CvApi.Services.ExperienceService
             _context.SaveChanges();
         }
 
-        public Experience GetExperience(Guid id)
+        public ExperienceDTO GetExperience(Guid id)
         {
             var response = _context.ExperienceEntities.Find(id);
-            return response;
+            var mapped = _mapper.Map<ExperienceDTO>(response);
+            return mapped;
         }
 
-        public IList<Experience> GetUserExperience(Guid id)
+        public IList<ExperienceDTO> GetUserExperience(Guid id)
         {
             var response = _context.ExperienceEntities.Where(item => item.UserID == id).ToList();
-            return response;
+            var mapped = _mapper.Map<IList<ExperienceDTO>>(response);
+            return mapped;
         }
 
-        public void UpdateExperience(Guid id, Experience experience)
+        public void UpdateExperience(Guid id, ExperienceDTO experience)
         {
             if (id != experience.ExperienceID)
             {
                 throw new ArgumentException();
             }
 
-            _context.Entry(experience).State = EntityState.Modified;
+            var mapped = _mapper.Map<Experience>(experience);
+            _context.Entry(mapped).State = EntityState.Modified;
 
             try
             {

@@ -10,8 +10,15 @@ namespace CvApi.Helper
         {
             CreateMap<User, UserDTO>();
             CreateMap<UserDTO, User>();
+
             CreateMap<Company, CompanyDTO>();
             CreateMap<CompanyDTO, Company>();
+
+            CreateMap<UserSkillDTO, UserSkill>();
+            CreateMap<UserSkill, UserSkillDTO>();
+
+            CreateMap<Experience, ExperienceDTO>();
+            CreateMap<ExperienceDTO, Experience>();
         }
     }
 }

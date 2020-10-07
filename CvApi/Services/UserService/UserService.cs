@@ -1,4 +1,6 @@
-﻿using CvApi.Models.Contexts;
+﻿using AutoMapper;
+using CvApi.Models.Contexts;
+using CvApi.Models.DataTransferObject;
 using CvApi.Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -9,10 +11,12 @@ namespace CvApi.Services.UserService
     public class UserService : IUserService
     {
         private readonly CVContext _context;
+        private IMapper _mapper;
 
-        public UserService(CVContext context)
+        public UserService(CVContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public User Authenticate(string email, string password)
@@ -32,19 +36,23 @@ namespace CvApi.Services.UserService
             return user;
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<UserDTO> GetAll()
         {
-            return _context.UserEntities;
+            var entities = _context.UserEntities;
+            var mapped = _mapper.Map<IList<UserDTO>>(entities);
+            return mapped;
         }
 
-        public User GetById(Guid id)
+        public UserDTO GetById(Guid id)
         {
-            return _context.UserEntities.Find(id);
+            var user = _context.UserEntities.Find(id);
+            var mapped = _mapper.Map<UserDTO>(user);
+            return mapped;
         }
 
-        public string Create(User user, string password)
+        public string Create(UserDTO userDto, string password)
         {
-            // validation
+            var user = _mapper.Map<User>(userDto);
             if (string.IsNullOrWhiteSpace(password))
                 throw new Exception("Password is required");
 
@@ -63,7 +71,7 @@ namespace CvApi.Services.UserService
             return String.Format("User {0} created successfully", user.Email);
         }
 
-        public void Update(User userParam, string password = null)
+        public void Update(UserDTO userParam, string password = null)
         {
             var user = _context.UserEntities.Find(userParam.UserID);
 

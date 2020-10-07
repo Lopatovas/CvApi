@@ -1,4 +1,6 @@
-﻿using CvApi.Models.Contexts;
+﻿using AutoMapper;
+using CvApi.Models.Contexts;
+using CvApi.Models.DataTransferObject;
 using CvApi.Models.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,15 +12,18 @@ namespace CvApi.Services.UserSkillsService
     public class UserSkillsService : IUserSkillsService
     {
         private readonly CVContext _context;
+        private readonly IMapper _mapper;
 
-        public UserSkillsService(CVContext context)
+        public UserSkillsService(CVContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public void CreateSkill(UserSkill userSkill)
+        public void CreateSkill(UserSkillDTO userSkill)
         {
-            _context.UserSkillEntities.Add(userSkill);
+            var mapped = _mapper.Map<UserSkill>(userSkill);
+            _context.UserSkillEntities.Add(mapped);
             _context.SaveChanges();
         }
 
@@ -34,7 +39,7 @@ namespace CvApi.Services.UserSkillsService
             _context.SaveChanges();
         }
 
-        public UserSkill GetSkillById(Guid id)
+        public UserSkillDTO GetSkillById(Guid id)
         {
             var skill = _context.UserSkillEntities.Find(id);
 
@@ -43,16 +48,19 @@ namespace CvApi.Services.UserSkillsService
                 throw new KeyNotFoundException();
             }
 
-            return skill;
+            var mapped = _mapper.Map<UserSkillDTO>(skill);
+
+            return mapped;
         }
 
-        public IList<UserSkill> GetUserSkills(Guid id)
+        public IList<UserSkillDTO> GetUserSkills(Guid id)
         {
             var response = _context.UserSkillEntities.Where(item => item.UserID == id).ToList();
-            return response;
+            var mapped = _mapper.Map<IList<UserSkillDTO>>(response);
+            return mapped;
         }
 
-        public void UpdateSkill(Guid id, UserSkill userSkill)
+        public void UpdateSkill(Guid id, UserSkillDTO userSkill)
         {
             if (id != userSkill.UserSkillID)
             {

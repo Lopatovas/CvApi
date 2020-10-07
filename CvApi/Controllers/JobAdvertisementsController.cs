@@ -1,5 +1,4 @@
-﻿using CvApi.Models.Contexts;
-using CvApi.Models.Entities.ResolvingTables;
+﻿using CvApi.Models.Entities.ResolvingTables;
 using CvApi.Services.JobAdvertisementService;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,12 +10,10 @@ namespace CvApi.Controllers
     [ApiController]
     public class JobAdvertisementsController : ControllerBase
     {
-        private readonly CVContext _context;
         private readonly IJobAdvertisementService _service;
 
-        public JobAdvertisementsController(CVContext context, IJobAdvertisementService service)
+        public JobAdvertisementsController(IJobAdvertisementService service)
         {
-            _context = context;
             _service = service;
         }
 
