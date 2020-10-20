@@ -75,7 +75,7 @@ namespace CvApi.Controllers
             {
                 return NotFound();
             }
-            return Ok();
+            return NoContent();
         }
     }
 }

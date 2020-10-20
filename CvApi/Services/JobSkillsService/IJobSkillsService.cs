@@ -1,4 +1,4 @@
-﻿using CvApi.Models.Entities;
+﻿using CvApi.Models.DataTransferObject;
 using System;
 using System.Collections.Generic;
 
@@ -6,13 +6,13 @@ namespace CvApi.Services.JobSkillsService
 {
     public interface IJobSkillsService
     {
-        public IList<JobSkill> GetJobSkills(Guid id);
+        public IList<JobSkillDTO> GetJobSkills(Guid id);
 
-        public JobSkill GetJobSkillById(Guid id);
+        public JobSkillDTO GetJobSkillById(Guid id);
 
-        public void UpdateJobSkill(Guid id, JobSkill skill);
+        public void UpdateJobSkill(Guid id, JobSkillDTO skill);
 
-        public void CreateJobSkill(JobSkill skill);
+        public void CreateJobSkill(JobSkillDTO skill);
 
         public void DeleteJobSkill(Guid id);
     }

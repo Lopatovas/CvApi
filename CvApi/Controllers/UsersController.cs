@@ -123,7 +123,7 @@ namespace CvApi.Controllers
         public IActionResult Delete(Guid id)
         {
             _userService.Delete(id);
-            return Ok();
+            return NoContent();
         }
 
         [HttpGet("{id}/skills")]
@@ -186,7 +186,7 @@ namespace CvApi.Controllers
             {
                 return NotFound();
             }
-            return Ok();
+            return NoContent();
         }
 
         [HttpGet("{id}/experiences")]
@@ -249,7 +249,7 @@ namespace CvApi.Controllers
             {
                 return NotFound();
             }
-            return Ok();
+            return NoContent();
         }
     }
 }

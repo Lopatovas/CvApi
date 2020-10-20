@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CvApi.Models.DataTransferObject;
 using CvApi.Models.Entities;
+using CvApi.Models.Entities.ResolvingTables;
 
 namespace CvApi.Helper
 {
@@ -19,6 +20,12 @@ namespace CvApi.Helper
 
             CreateMap<Experience, ExperienceDTO>();
             CreateMap<ExperienceDTO, Experience>();
+
+            CreateMap<JobSkill, JobSkillDTO>();
+            CreateMap<JobSkillDTO, JobSkill>();
+
+            CreateMap<JobAdvertisementDTO, JobAdvertisement>();
+            CreateMap<JobAdvertisement, JobAdvertisementDTO>();
         }
     }
 }
