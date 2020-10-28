@@ -2,7 +2,6 @@
 using CvApi.Models.Contexts;
 using CvApi.Models.DataTransferObject;
 using CvApi.Models.Entities;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,32 +61,26 @@ namespace CvApi.Services.CompanyService
             }
 
             var mapped = _mapper.Map<Company>(company);
-
-            _context.Entry(mapped).State = EntityState.Modified;
-
-            try
+            var companyInDb = _context.CompanyEntities.Find(mapped.CompanyID);
+            if (companyInDb == null)
             {
-                _context.SaveChanges();
+                throw new KeyNotFoundException();
             }
-            catch (DbUpdateConcurrencyException)
+            else
             {
-                if (!CompanyExists(id))
-                {
-                    throw new InvalidOperationException();
-                }
+                _context.Entry(companyInDb).CurrentValues.SetValues(mapped);
+                _context.SaveChanges();
             }
         }
 
-        public void CreateCompany(CompanyDTO company)
+        public CompanyDTO CreateCompany(CompanyDTO company)
         {
             var mapped = _mapper.Map<Company>(company);
             _context.CompanyEntities.Add(mapped);
             _context.SaveChanges();
-        }
-
-        private bool CompanyExists(Guid id)
-        {
-            return _context.CompanyEntities.Any(e => e.CompanyID == id);
+            var response = company;
+            response.CompanyID = mapped.CompanyID;
+            return response;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using CvApi.Models.Entities.ResolvingTables;
+﻿using CvApi.Models.DataTransferObject;
 using System;
 using System.Collections.Generic;
 
@@ -6,14 +6,18 @@ namespace CvApi.Services.JobAdvertisementService
 {
     public interface IJobAdvertisementService
     {
-        public IList<JobAdvertisement> GetAdvertisements();
+        public IList<JobAdvertisementDTO> GetAdvertisements();
 
-        public JobAdvertisement GetAdvertisementById(Guid id);
+        public IList<JobAdvertisementDTO> GetAdvertisementsByCompany(Guid companyId);
 
-        public void UpdateAdvertisement(Guid id, JobAdvertisement advertisement);
+        public JobAdvertisementDTO GetAdvertisementById(Guid id);
 
-        public void CreateAdvertisement(JobAdvertisement advertisement);
+        public JobAdvertisementDTO GetAdvertisementByCompany(Guid companyId, Guid id);
 
-        public void DeleteAdvertisement(Guid id);
+        public void UpdateAdvertisement(Guid companyId, Guid id, JobAdvertisementDTO advertisement);
+
+        public JobAdvertisementDTO CreateAdvertisement(Guid companyId, JobAdvertisementDTO advertisement);
+
+        public void DeleteAdvertisement(Guid companyId, Guid id);
     }
 }

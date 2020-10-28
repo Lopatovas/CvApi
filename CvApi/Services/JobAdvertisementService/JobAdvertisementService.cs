@@ -1,6 +1,7 @@
-﻿using CvApi.Models.Contexts;
+﻿using AutoMapper;
+using CvApi.Models.Contexts;
+using CvApi.Models.DataTransferObject;
 using CvApi.Models.Entities.ResolvingTables;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,21 +11,33 @@ namespace CvApi.Services.JobAdvertisementService
     public class JobAdvertisementService : IJobAdvertisementService
     {
         private readonly CVContext _context;
+        private readonly IMapper _mapper;
 
-        public JobAdvertisementService(CVContext context)
+        public JobAdvertisementService(CVContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public void CreateAdvertisement(JobAdvertisement advertisement)
+        public JobAdvertisementDTO CreateAdvertisement(Guid companyId, JobAdvertisementDTO advertisement)
         {
-            _context.JobAdvertisementEntities.Add(advertisement);
-            _context.SaveChangesAsync();
+            var mapped = _mapper.Map<JobAdvertisement>(advertisement);
+            var company = _context.CompanyEntities.Find(companyId);
+            if (company == null)
+            {
+                throw new KeyNotFoundException();
+            }
+            mapped.CompanyID = companyId;
+            _context.JobAdvertisementEntities.Add(mapped);
+            _context.SaveChanges();
+            var response = advertisement;
+            response.CompanyID = mapped.JobAdvertisementID;
+            return response;
         }
 
-        public void DeleteAdvertisement(Guid id)
+        public void DeleteAdvertisement(Guid companyId, Guid id)
         {
-            var advertisement = _context.JobAdvertisementEntities.Find(id);
+            var advertisement = _context.JobAdvertisementEntities.Where(item => item.CompanyID == companyId && item.JobAdvertisementID == id).FirstOrDefault();
             if (advertisement == null)
             {
                 throw new KeyNotFoundException();
@@ -32,45 +45,69 @@ namespace CvApi.Services.JobAdvertisementService
 
             _context.JobAdvertisementEntities.Remove(advertisement);
             _context.SaveChanges();
+
         }
 
-        public JobAdvertisement GetAdvertisementById(Guid id)
+        public JobAdvertisementDTO GetAdvertisementByCompany(Guid companyId, Guid id)
         {
-            var response = _context.JobAdvertisementEntities.Find(id);
-            return response;
+            var advertisement = _context.JobAdvertisementEntities.Where(item => item.CompanyID == companyId && item.JobAdvertisementID == id).FirstOrDefault();
+
+            if (advertisement == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            var mapped = _mapper.Map<JobAdvertisementDTO>(advertisement);
+
+            return mapped;
         }
 
-        public IList<JobAdvertisement> GetAdvertisements()
+        public JobAdvertisementDTO GetAdvertisementById(Guid id)
+        {
+            var advertisement = _context.JobAdvertisementEntities.Find(id);
+
+            if (advertisement == null)
+            {
+                throw new KeyNotFoundException();
+            }
+
+            var mapped = _mapper.Map<JobAdvertisementDTO>(advertisement);
+
+            return mapped;
+        }
+
+        public IList<JobAdvertisementDTO> GetAdvertisements()
         {
             var response = _context.JobAdvertisementEntities.ToList();
-            return response;
+            var mapped = _mapper.Map<IList<JobAdvertisementDTO>>(response);
+            return mapped;
         }
 
-        public void UpdateAdvertisement(Guid id, JobAdvertisement advertisement)
+        public IList<JobAdvertisementDTO> GetAdvertisementsByCompany(Guid companyId)
         {
-            if (id != advertisement.JobAdvertisementID)
+            var response = _context.JobAdvertisementEntities.Where(item => item.CompanyID == companyId).ToList();
+            var mapped = _mapper.Map<IList<JobAdvertisementDTO>>(response);
+            return mapped;
+        }
+
+        public void UpdateAdvertisement(Guid companyId, Guid id, JobAdvertisementDTO advertisement)
+        {
+            if (id != advertisement.JobAdvertisementID || companyId != advertisement.CompanyID)
             {
                 throw new ArgumentException();
             }
 
-            _context.Entry(advertisement).State = EntityState.Modified;
-
-            try
+            var mapped = _mapper.Map<JobAdvertisement>(advertisement);
+            var advertisementInDb = _context.JobAdvertisementEntities.Where(item => item.CompanyID == companyId && item.JobAdvertisementID == id).First();
+            if (advertisementInDb == null)
             {
+                throw new KeyNotFoundException();
+            }
+            else
+            {
+                _context.Entry(advertisementInDb).CurrentValues.SetValues(mapped);
                 _context.SaveChanges();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AdvertisementExists(id))
-                {
-                    throw new InvalidOperationException();
-                }
-            }
-        }
-
-        private bool AdvertisementExists(Guid id)
-        {
-            return _context.JobAdvertisementEntities.Any(e => e.JobAdvertisementID == id);
         }
     }
 }

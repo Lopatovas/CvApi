@@ -1,5 +1,4 @@
-﻿using CvApi.Models.Entities.ResolvingTables;
-using CvApi.Services.JobAdvertisementService;
+﻿using CvApi.Services.JobAdvertisementService;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -18,7 +17,7 @@ namespace CvApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetJobAdvertisementEntities()
+        public IActionResult GetAdvertisements()
         {
             var advertisements = _service.GetAdvertisements();
             return Ok(advertisements);
@@ -36,46 +35,6 @@ namespace CvApi.Controllers
             {
                 return NotFound();
             }
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult PutJobAdvertisement(Guid id, [FromBody] JobAdvertisement jobAdvertisement)
-        {
-            try
-            {
-                _service.UpdateAdvertisement(id, jobAdvertisement);
-            }
-            catch (ArgumentException)
-            {
-                return BadRequest();
-            }
-            catch (InvalidOperationException)
-            {
-                return NotFound();
-            }
-            return NoContent();
-        }
-
-        [HttpPost]
-        public IActionResult PostJobAdvertisement([FromBody] JobAdvertisement jobAdvertisement)
-        {
-            _service.CreateAdvertisement(jobAdvertisement);
-
-            return CreatedAtAction("GetJobAdvertisement", new { id = jobAdvertisement.JobAdvertisementID }, jobAdvertisement);
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult DeleteJobAdvertisement(Guid id)
-        {
-            try
-            {
-                _service.DeleteAdvertisement(id);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
-            return NoContent();
         }
     }
 }

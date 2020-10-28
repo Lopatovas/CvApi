@@ -1,12 +1,10 @@
-﻿using AutoMapper;
+﻿using CvApi.Helper.ErrorHandler;
 using CvApi.Models.DataTransferObject;
-using CvApi.Models.Entities.ResolvingTables;
 using CvApi.Services.CompanyService;
 using CvApi.Services.JobAdvertisementService;
 using CvApi.Services.JobSkillsService;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 
 namespace CvApi.Controllers
 {
@@ -17,14 +15,14 @@ namespace CvApi.Controllers
         private readonly ICompanyService _companyService;
         private readonly IJobSkillsService _jobSkillsService;
         private readonly IJobAdvertisementService _jobAddService;
-        private readonly IMapper _mapper;
+        private readonly IErrorHandler _handler;
 
-        public CompaniesController(ICompanyService companyService, IJobSkillsService jobSkillsService, IJobAdvertisementService jobAddService, IMapper mapper)
+        public CompaniesController(ICompanyService companyService, IJobSkillsService jobSkillsService, IJobAdvertisementService jobAddService, IErrorHandler handler)
         {
             _companyService = companyService;
             _jobSkillsService = jobSkillsService;
             _jobAddService = jobAddService;
-            _mapper = mapper;
+            _handler = handler;
         }
 
         [HttpGet]
@@ -43,9 +41,9 @@ namespace CvApi.Controllers
                 var company = _companyService.GetCompanyById(id);
                 return Ok(company);
             }
-            catch (KeyNotFoundException)
+            catch (Exception e)
             {
-                return NotFound();
+                return _handler.HandleError(e);
             }
         }
 
@@ -55,24 +53,26 @@ namespace CvApi.Controllers
             try
             {
                 _companyService.UpdateCompany(id, company);
+                return NoContent();
             }
-            catch (ArgumentException)
+            catch (Exception e)
             {
-                return BadRequest();
+                return _handler.HandleError(e);
             }
-            catch (InvalidOperationException)
-            {
-                return NotFound();
-            }
-            return NoContent();
         }
 
         [HttpPost]
         public IActionResult PostCompany([FromBody] CompanyDTO company)
         {
-            _companyService.CreateCompany(company);
-
-            return CreatedAtAction("GetCompany", new { id = company.CompanyID }, company);
+            try
+            {
+                var newCompany = _companyService.CreateCompany(company);
+                return CreatedAtAction("GetCompany", new { id = newCompany.CompanyID }, newCompany);
+            }
+            catch (Exception e)
+            {
+                return _handler.HandleError(e);
+            }
         }
 
         // DELETE: api/Companies/5
@@ -82,18 +82,18 @@ namespace CvApi.Controllers
             try
             {
                 _companyService.DeleteCompany(id);
+                return NoContent();
             }
-            catch (KeyNotFoundException)
+            catch (Exception e)
             {
-                return NotFound();
+                return _handler.HandleError(e);
             }
-            return NoContent();
         }
 
         [HttpGet("{id}/JobAdvertisements")]
-        public IActionResult GetJobAdvertisementEntities()
+        public IActionResult GetJobAdvertisementEntities(Guid id)
         {
-            var advertisements = _jobAddService.GetAdvertisements();
+            var advertisements = _jobAddService.GetAdvertisementsByCompany(id);
             return Ok(advertisements);
         }
 
@@ -103,12 +103,12 @@ namespace CvApi.Controllers
             try
             {
                 var ids = id;
-                var advertisement = _jobAddService.GetAdvertisementById(addId);
+                var advertisement = _jobAddService.GetAdvertisementByCompany(id, addId);
                 return Ok(advertisement);
             }
-            catch (KeyNotFoundException)
+            catch (Exception e)
             {
-                return NotFound();
+                return _handler.HandleError(e);
             }
         }
 
@@ -117,29 +117,27 @@ namespace CvApi.Controllers
         {
             try
             {
-                var ids = id;
-                var mapped = _mapper.Map<JobAdvertisement>(jobAdvertisement);
-                _jobAddService.UpdateAdvertisement(jobAddId, mapped);
+                _jobAddService.UpdateAdvertisement(id, jobAddId, jobAdvertisement);
+                return NoContent();
             }
-            catch (ArgumentException)
+            catch (Exception e)
             {
-                return BadRequest();
+                return _handler.HandleError(e);
             }
-            catch (InvalidOperationException)
-            {
-                return NotFound();
-            }
-            return NoContent();
         }
 
         [HttpPost("{id}/JobAdvertisements")]
         public IActionResult PostJobAdvertisement(Guid id, [FromBody] JobAdvertisementDTO jobAdvertisement)
         {
-            var mapped = _mapper.Map<JobAdvertisement>(jobAdvertisement);
-            mapped.CompanyID = id;
-            _jobAddService.CreateAdvertisement(mapped);
-
-            return CreatedAtAction("GetJobAdvertisement", new { id = jobAdvertisement.JobAdvertisementID }, jobAdvertisement);
+            try
+            {
+                var newJobAdd = _jobAddService.CreateAdvertisement(id, jobAdvertisement);
+                return CreatedAtAction("GetJobAdvertisement", new { id = newJobAdd.CompanyID, addId = newJobAdd.JobAdvertisementID }, jobAdvertisement);
+            }
+            catch (Exception e)
+            {
+                return _handler.HandleError(e);
+            }
         }
 
         [HttpDelete("{id}/JobAdvertisements/{jobId}")]
@@ -147,13 +145,13 @@ namespace CvApi.Controllers
         {
             try
             {
-                _jobAddService.DeleteAdvertisement(jobId);
+                _jobAddService.DeleteAdvertisement(id, jobId);
+                return NoContent();
             }
-            catch (KeyNotFoundException)
+            catch (Exception e)
             {
-                return NotFound();
+                return _handler.HandleError(e);
             }
-            return NoContent();
         }
 
         [HttpGet("{id}/JobAdvertisements/{jobAdId}/JobSkills")]
@@ -161,56 +159,55 @@ namespace CvApi.Controllers
         {
             try
             {
-                var jobSkills = _jobSkillsService.GetJobSkills(jobAdId);
+                var jobSkills = _jobSkillsService.GetJobSkills(id, jobAdId);
                 return Ok(jobSkills);
             }
-            catch (KeyNotFoundException)
+            catch (Exception e)
             {
-                return NotFound();
+                return _handler.HandleError(e);
             }
         }
 
-        [HttpGet("{id}/JobAdvertisements/{jobAdId}/JobSkills/{jobSkillId}")]
-        public IActionResult GetCompanyAddJobId(Guid id, Guid jobAdId, Guid jobSkillId)
+        [HttpGet("{id}/JobAdvertisements/{jobAddId}/JobSkills/{jobSkillId}")]
+        public IActionResult GetCompanyAddJobId(Guid id, Guid jobAddId, Guid jobSkillId)
         {
             try
             {
-                var jobSkills = _jobSkillsService.GetJobSkillById(jobSkillId);
+                var jobSkills = _jobSkillsService.GetJobSkillById(id, jobAddId, jobSkillId);
                 return Ok(jobSkills);
             }
-            catch (KeyNotFoundException)
+            catch (Exception e)
             {
-                return NotFound();
+                return _handler.HandleError(e);
             }
         }
 
-        [HttpPost("{id}/JobAdvertisements/{jobAdId}/JobSkills")]
-        public IActionResult PostJobSkill(Guid id, Guid jobAdId, [FromBody] JobSkillDTO jobSkill)
+        [HttpPost("{id}/JobAdvertisements/{jobAddId}/JobSkills")]
+        public IActionResult PostJobSkill(Guid id, Guid jobAddId, [FromBody] JobSkillDTO jobSkill)
         {
             try
             {
-                jobSkill.JobAdvertisementID = jobAdId;
-                _jobSkillsService.CreateJobSkill(jobSkill);
+                _jobSkillsService.CreateJobSkill(id, jobAddId, jobSkill);
                 return CreatedAtAction("PostJobSkill", jobSkill);
             }
-            catch (KeyNotFoundException)
+            catch (Exception e)
             {
-                return NotFound();
+                return _handler.HandleError(e);
             }
         }
 
-        [HttpDelete("{id}/JobAdvertisements/{jobAdId}/JobSkills/{jobSkillId}")]
-        public IActionResult DeleteJobSkill(Guid id, Guid jobAdId, Guid jobSkillId)
+        [HttpDelete("{id}/JobAdvertisements/{jobAddId}/JobSkills/{jobSkillId}")]
+        public IActionResult DeleteJobSkill(Guid id, Guid jobAddId, Guid jobSkillId)
         {
             try
             {
-                _jobSkillsService.DeleteJobSkill(jobSkillId);
+                _jobSkillsService.DeleteJobSkill(id, jobAddId, jobSkillId);
+                return NoContent();
             }
-            catch (KeyNotFoundException)
+            catch (Exception e)
             {
-                return NotFound();
+                return _handler.HandleError(e);
             }
-            return NoContent();
         }
     }
 }

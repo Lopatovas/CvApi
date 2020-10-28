@@ -12,7 +12,7 @@ namespace CvApi.Services.CompanyService
 
         public void UpdateCompany(Guid id, CompanyDTO company);
 
-        public void CreateCompany(CompanyDTO company);
+        public CompanyDTO CreateCompany(CompanyDTO company);
 
         public void DeleteCompany(Guid id);
     }

@@ -6,14 +6,14 @@ namespace CvApi.Services.JobSkillsService
 {
     public interface IJobSkillsService
     {
-        public IList<JobSkillDTO> GetJobSkills(Guid id);
+        public IList<JobSkillDTO> GetJobSkills(Guid companyId, Guid id);
 
-        public JobSkillDTO GetJobSkillById(Guid id);
+        public JobSkillDTO GetJobSkillById(Guid companyId, Guid jobAddId, Guid id);
 
-        public void UpdateJobSkill(Guid id, JobSkillDTO skill);
+        public void UpdateJobSkill(Guid companyId, Guid jobAddId, Guid id, JobSkillDTO skill);
 
-        public void CreateJobSkill(JobSkillDTO skill);
+        public JobSkillDTO CreateJobSkill(Guid companyId, Guid jobAddId, JobSkillDTO skill);
 
-        public void DeleteJobSkill(Guid id);
+        public void DeleteJobSkill(Guid companyId, Guid jobAddId, Guid id);
     }
 }
