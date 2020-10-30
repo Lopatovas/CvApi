@@ -1,5 +1,7 @@
 ﻿using CvApi.Helper.ErrorHandler;
 using CvApi.Models.DataTransferObject;
+using CvApi.Models.Enums;
+using CvApi.Services.ApplicationService;
 using CvApi.Services.CompanyService;
 using CvApi.Services.JobAdvertisementService;
 using CvApi.Services.JobSkillsService;
@@ -16,13 +18,15 @@ namespace CvApi.Controllers
         private readonly IJobSkillsService _jobSkillsService;
         private readonly IJobAdvertisementService _jobAddService;
         private readonly IErrorHandler _handler;
+        private readonly IApplicationService _applicationService;
 
-        public CompaniesController(ICompanyService companyService, IJobSkillsService jobSkillsService, IJobAdvertisementService jobAddService, IErrorHandler handler)
+        public CompaniesController(ICompanyService companyService, IJobSkillsService jobSkillsService, IJobAdvertisementService jobAddService, IErrorHandler handler, IApplicationService applicationService)
         {
             _companyService = companyService;
             _jobSkillsService = jobSkillsService;
             _jobAddService = jobAddService;
             _handler = handler;
+            _applicationService = applicationService;
         }
 
         [HttpGet]
@@ -202,6 +206,34 @@ namespace CvApi.Controllers
             try
             {
                 _jobSkillsService.DeleteJobSkill(id, jobAddId, jobSkillId);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                return _handler.HandleError(e);
+            }
+        }
+
+        [HttpGet("{id}/JobAdvertisements/{jobAddId}/Applications")]
+        public IActionResult GetApplicants(Guid id, Guid jobAddId)
+        {
+            try
+            {
+                var applicatants = _applicationService.GetApplicants(id, jobAddId);
+                return Ok(applicatants);
+            }
+            catch (Exception e)
+            {
+                return _handler.HandleError(e);
+            }
+        }
+
+        [HttpPut("{id}/JobAdvertisements/{jobAddId}/Applications/{applicationId}")]
+        public IActionResult UpdateStatus(Guid id, Guid jobAddId, Guid applicationId, [FromBody] ApplicationStatus applicationStatus)
+        {
+            try
+            {
+                _applicationService.UpdateStatus(id, jobAddId, applicationId, applicationStatus);
                 return NoContent();
             }
             catch (Exception e)

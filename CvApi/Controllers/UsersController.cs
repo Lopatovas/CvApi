@@ -1,5 +1,7 @@
 ﻿using CvApi.Helper;
+using CvApi.Helper.ErrorHandler;
 using CvApi.Models.DataTransferObject;
+using CvApi.Services.ApplicationService;
 using CvApi.Services.ExperienceService;
 using CvApi.Services.UserService;
 using CvApi.Services.UserSkillsService;
@@ -8,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -23,19 +24,25 @@ namespace CvApi.Controllers
         private IUserService _userService;
         private IUserSkillsService _userSkillsService;
         private IExperienceService _userExperienceService;
+        private readonly IApplicationService _applicationService;
         private readonly AppSettings _appSettings;
+        private readonly IErrorHandler _handler;
 
         public UsersController(
             IUserService userService,
             IUserSkillsService userSkillsService,
             IExperienceService experienceService,
-            IOptions<AppSettings> appSettings
+            IOptions<AppSettings> appSettings,
+            IApplicationService applicationService,
+            IErrorHandler handler
             )
         {
             _userService = userService;
             _appSettings = appSettings.Value;
             _userSkillsService = userSkillsService;
             _userExperienceService = experienceService;
+            _applicationService = applicationService;
+            _handler = handler;
         }
 
         [AllowAnonymous]
@@ -141,9 +148,9 @@ namespace CvApi.Controllers
                 var userSkill = _userSkillsService.GetSkillById(skillId);
                 return Ok(userSkill);
             }
-            catch (KeyNotFoundException)
+            catch (Exception e)
             {
-                return NotFound();
+                return _handler.HandleError(e);
             }
         }
 
@@ -163,16 +170,12 @@ namespace CvApi.Controllers
                 userSkill.UserID = id;
                 userSkill.SkillID = skillId;
                 _userSkillsService.UpdateSkill(skillId, userSkill);
+                return NoContent();
             }
-            catch (ArgumentException)
+            catch (Exception e)
             {
-                return BadRequest();
+                return _handler.HandleError(e);
             }
-            catch (InvalidOperationException)
-            {
-                return NotFound();
-            }
-            return NoContent();
         }
 
         [HttpDelete("{id}/skills/{skillId}")]
@@ -181,12 +184,12 @@ namespace CvApi.Controllers
             try
             {
                 _userSkillsService.DeleteUserSkill(skillId);
+                return NoContent();
             }
-            catch (KeyNotFoundException)
+            catch (Exception e)
             {
-                return NotFound();
+                return _handler.HandleError(e);
             }
-            return NoContent();
         }
 
         [HttpGet("{id}/experiences")]
@@ -204,9 +207,9 @@ namespace CvApi.Controllers
                 var experience = _userExperienceService.GetExperience(experienceId);
                 return Ok(experience);
             }
-            catch (KeyNotFoundException)
+            catch (Exception e)
             {
-                return NotFound();
+                return _handler.HandleError(e);
             }
         }
 
@@ -226,16 +229,12 @@ namespace CvApi.Controllers
                 experience.UserID = id;
                 experience.ExperienceID = experienceId;
                 _userExperienceService.UpdateExperience(experienceId, experience);
+                return NoContent();
             }
-            catch (ArgumentException)
+            catch (Exception e)
             {
-                return BadRequest();
+                return _handler.HandleError(e);
             }
-            catch (InvalidOperationException)
-            {
-                return NotFound();
-            }
-            return NoContent();
         }
 
         [HttpDelete("{id}/experiences/{experienceId}")]
@@ -244,12 +243,40 @@ namespace CvApi.Controllers
             try
             {
                 _userExperienceService.DeleteExperience(experienceId);
+                return NoContent();
             }
-            catch (KeyNotFoundException)
+            catch (Exception e)
             {
-                return NotFound();
+                return _handler.HandleError(e);
             }
-            return NoContent();
+        }
+
+        [HttpGet("{id}/Applications")]
+        public IActionResult GetApplicants(Guid id)
+        {
+            try
+            {
+                var applicatants = _applicationService.GetApplications(id);
+                return Ok(applicatants);
+            }
+            catch (Exception e)
+            {
+                return _handler.HandleError(e);
+            }
+        }
+
+        [HttpDelete("{id}/applications/{applicationId}")]
+        public IActionResult RemoveApplication(Guid id, Guid applicationId)
+        {
+            try
+            {
+                _applicationService.DeleteApplication(id, applicationId);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                return _handler.HandleError(e);
+            }
         }
     }
 }

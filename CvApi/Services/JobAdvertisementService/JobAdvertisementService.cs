@@ -31,7 +31,7 @@ namespace CvApi.Services.JobAdvertisementService
             _context.JobAdvertisementEntities.Add(mapped);
             _context.SaveChanges();
             var response = advertisement;
-            response.CompanyID = mapped.JobAdvertisementID;
+            response.JobAdvertisementID = mapped.JobAdvertisementID;
             return response;
         }
 

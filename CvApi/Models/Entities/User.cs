@@ -29,7 +29,6 @@ namespace CvApi.Models.Entities
         public virtual ICollection<Application> Applications { get; set; }
         public virtual ICollection<Experience> UserExperiences { get; set; }
         public virtual ICollection<UserSkill> UserSkills { get; set; }
-        public virtual ICollection<CoverLetter> CoverLetters { get; set; }
 
     }
 }

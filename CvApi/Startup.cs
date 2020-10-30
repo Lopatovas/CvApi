@@ -2,8 +2,8 @@ using AutoMapper;
 using CvApi.Helper;
 using CvApi.Helper.ErrorHandler;
 using CvApi.Models.Contexts;
+using CvApi.Services.ApplicationService;
 using CvApi.Services.CompanyService;
-using CvApi.Services.CoverLetterService;
 using CvApi.Services.ExperienceService;
 using CvApi.Services.JobAdvertisementService;
 using CvApi.Services.JobSkillsService;
@@ -85,12 +85,12 @@ namespace CvApi
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ISkillsService, SkillsService>();
-            services.AddScoped<ICoverLetterService, CoverLetterService>();
             services.AddScoped<IExperienceService, ExperienceService>();
             services.AddScoped<IJobSkillsService, JobSkillsService>();
             services.AddScoped<IUserSkillsService, UserSkillsService>();
             services.AddScoped<IJobAdvertisementService, JobAdvertisementService>();
             services.AddScoped<IErrorHandler, ErrorHandler>();
+            services.AddScoped<IApplicationService, ApplicationService>();
 
             services.AddSwaggerDocument(config =>
                 { config.Title = "Jobster API"; config.Description = "An API used to manipulate data in the Jobster project"; }

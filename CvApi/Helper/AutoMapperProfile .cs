@@ -26,6 +26,9 @@ namespace CvApi.Helper
 
             CreateMap<JobAdvertisementDTO, JobAdvertisement>();
             CreateMap<JobAdvertisement, JobAdvertisementDTO>();
+
+            CreateMap<Application, ApplicationDTO>();
+            CreateMap<ApplicationDTO, Application>();
         }
     }
 }
