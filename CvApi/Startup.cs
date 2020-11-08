@@ -19,6 +19,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -82,6 +83,13 @@ namespace CvApi
                 };
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy => policy.RequireClaim(ClaimTypes.Role, "Admin"));
+                options.AddPolicy("Users", policy => policy.RequireClaim(ClaimTypes.Role, "User"));
+                options.AddPolicy("Company", policy => policy.RequireClaim(ClaimTypes.Role, "CompanyWorker"));
+            });
+
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICompanyService, CompanyService>();
             services.AddScoped<ISkillsService, SkillsService>();
@@ -111,6 +119,8 @@ namespace CvApi
             ); ;
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
 
             app.UseRouting();
 

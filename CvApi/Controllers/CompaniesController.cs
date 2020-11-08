@@ -5,6 +5,7 @@ using CvApi.Services.ApplicationService;
 using CvApi.Services.CompanyService;
 using CvApi.Services.JobAdvertisementService;
 using CvApi.Services.JobSkillsService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -12,6 +13,7 @@ namespace CvApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = "Company")]
     public class CompaniesController : ControllerBase
     {
         private readonly ICompanyService _companyService;
@@ -30,6 +32,7 @@ namespace CvApi.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetCompanyEntities()
         {
             var companies = _companyService.GetCompanies();
@@ -38,6 +41,7 @@ namespace CvApi.Controllers
 
         // GET: api/Companies/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public IActionResult GetCompany(Guid id)
         {
             try

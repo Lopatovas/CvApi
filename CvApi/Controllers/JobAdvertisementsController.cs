@@ -2,6 +2,7 @@
 using CvApi.Models.DataTransferObject;
 using CvApi.Services.ApplicationService;
 using CvApi.Services.JobAdvertisementService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -44,6 +45,7 @@ namespace CvApi.Controllers
         }
 
         [HttpPost("{id}/Apply")]
+        [Authorize(Policy = "User")]
         public IActionResult Apply(Guid id, ApplicationDTO application)
         {
             try

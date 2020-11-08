@@ -1,5 +1,6 @@
 ﻿using CvApi.Models.Entities;
 using CvApi.Services.SkillsService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ namespace CvApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SkillsController : ControllerBase
     {
         private readonly ISkillsService _skillsService;
@@ -18,6 +20,7 @@ namespace CvApi.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult GetSkillEntities()
         {
             var skills = _skillsService.GetSkills();
@@ -25,6 +28,7 @@ namespace CvApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public IActionResult GetSkill(Guid id)
         {
             try
@@ -39,6 +43,7 @@ namespace CvApi.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "Admin")]
         public IActionResult PutSkill(Guid id, [FromBody] Skill skill)
         {
             try
@@ -57,6 +62,7 @@ namespace CvApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "Users")]
         public IActionResult PostSkill([FromBody] Skill skill)
         {
             _skillsService.CreateSkill(skill);
@@ -65,6 +71,7 @@ namespace CvApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "Admin")]
         public IActionResult DeleteSkill(Guid id)
         {
             try

@@ -18,6 +18,7 @@ namespace CvApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class UsersController : ControllerBase
     {
 
@@ -60,7 +61,8 @@ namespace CvApi.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.UserID.ToString())
+                    new Claim(ClaimTypes.Name, user.UserID.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -96,6 +98,7 @@ namespace CvApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "Users")]
         public IActionResult GetAll()
         {
             var users = _userService.GetAll();
@@ -110,6 +113,7 @@ namespace CvApi.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Policy = "Users")]
         public IActionResult Update(Guid id, [FromBody]UserDTO userDto)
         {
 
@@ -127,6 +131,7 @@ namespace CvApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Policy = "Users")]
         public IActionResult Delete(Guid id)
         {
             _userService.Delete(id);
@@ -155,6 +160,7 @@ namespace CvApi.Controllers
         }
 
         [HttpPost("{id}/skills")]
+        [Authorize(Policy = "Users")]
         public IActionResult CreateUserSkill(Guid id, [FromBody]UserSkillDTO userSkill)
         {
             userSkill.UserID = id;
@@ -163,6 +169,7 @@ namespace CvApi.Controllers
         }
 
         [HttpPut("{id}/skills/{skillId}")]
+        [Authorize(Policy = "Users")]
         public IActionResult UpdateUserSkill(Guid id, Guid skillId, [FromBody]UserSkillDTO userSkill)
         {
             try
@@ -179,6 +186,7 @@ namespace CvApi.Controllers
         }
 
         [HttpDelete("{id}/skills/{skillId}")]
+        [Authorize(Policy = "Users")]
         public IActionResult RemoveUserSkill(Guid _, Guid skillId)
         {
             try
@@ -214,6 +222,7 @@ namespace CvApi.Controllers
         }
 
         [HttpPost("{id}/experiences")]
+        [Authorize(Policy = "Users")]
         public IActionResult CreateUserExperience(Guid id, [FromBody]ExperienceDTO experience)
         {
             experience.UserID = id;
@@ -222,6 +231,7 @@ namespace CvApi.Controllers
         }
 
         [HttpPut("{id}/experiences/{experienceId}")]
+        [Authorize(Policy = "Users")]
         public IActionResult UpdateUserExperience(Guid id, Guid experienceId, [FromBody]ExperienceDTO experience)
         {
             try
@@ -238,6 +248,7 @@ namespace CvApi.Controllers
         }
 
         [HttpDelete("{id}/experiences/{experienceId}")]
+        [Authorize(Policy = "Users")]
         public IActionResult RemoveUserExperience(Guid _, Guid experienceId)
         {
             try
@@ -252,7 +263,8 @@ namespace CvApi.Controllers
         }
 
         [HttpGet("{id}/Applications")]
-        public IActionResult GetApplicants(Guid id)
+        [Authorize(Policy = "Users")]
+        public IActionResult GetApplications(Guid id)
         {
             try
             {
@@ -266,6 +278,7 @@ namespace CvApi.Controllers
         }
 
         [HttpDelete("{id}/applications/{applicationId}")]
+        [Authorize(Policy = "Users")]
         public IActionResult RemoveApplication(Guid id, Guid applicationId)
         {
             try
