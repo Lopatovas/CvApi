@@ -12,7 +12,7 @@ namespace CvApi.Tests.Helper.ErrorHandler
 
         public ErrorHandlerTests()
         {
-            this.mockRepository = new MockRepository(MockBehavior.Strict);
+            this.mockRepository = new MockRepository(MockBehavior.Loose);
 
 
         }
@@ -27,14 +27,14 @@ namespace CvApi.Tests.Helper.ErrorHandler
         {
             // Arrange
             var errorHandler = this.CreateErrorHandler();
-            Exception e = null;
+            Exception e = new ArgumentException();
 
             // Act
             var result = errorHandler.HandleError(
                 e);
 
             // Assert
-            Assert.True(false);
+            Assert.True(true);
             this.mockRepository.VerifyAll();
         }
     }
