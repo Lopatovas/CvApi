@@ -320,7 +320,7 @@ namespace CvApi.Tests.Controllers
         }
 
         [Fact]
-        public void DeleteJobAdvertisement_StateUnderTest_ExpectedBehavior()
+        public void DeleteJobAdvertisement_Default_ShouldDeleteJobAdd()
         {
             // Arrange
             var companiesController = this.CreateCompaniesController();

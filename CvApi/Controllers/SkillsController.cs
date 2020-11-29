@@ -62,7 +62,7 @@ namespace CvApi.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = "Users")]
+        [Authorize(Policy = "Admin")]
         public IActionResult PostSkill([FromBody] Skill skill)
         {
             _skillsService.CreateSkill(skill);

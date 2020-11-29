@@ -121,7 +121,7 @@ namespace CvApi.Controllers
             {
                 // save 
                 _userService.Update(userDto, userDto.Password);
-                return Ok();
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -165,7 +165,7 @@ namespace CvApi.Controllers
         {
             userSkill.UserID = id;
             _userSkillsService.CreateSkill(userSkill);
-            return CreatedAtAction("GetSkill", new { id = userSkill.SkillID }, userSkill);
+            return CreatedAtAction("GetUserSkill", new { id = userSkill.UserID, skillId = userSkill.SkillID }, userSkill);
         }
 
         [HttpPut("{id}/skills/{skillId}")]
@@ -227,7 +227,7 @@ namespace CvApi.Controllers
         {
             experience.UserID = id;
             _userExperienceService.CreateExperience(experience);
-            return CreatedAtAction("GetExperience", new { id = experience.ExperienceID }, experience);
+            return CreatedAtAction("GetUserExperience", new { id = experience.UserID, experienceId = experience.ExperienceID }, experience);
         }
 
         [HttpPut("{id}/experiences/{experienceId}")]
