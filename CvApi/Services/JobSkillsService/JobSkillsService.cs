@@ -65,14 +65,25 @@ namespace CvApi.Services.JobSkillsService
         public IList<JobSkillDTO> GetJobSkills(Guid companyId, Guid id)
         {
             var jobAdd = _context.JobAdvertisementEntities.Where(item => item.CompanyID == companyId && item.JobAdvertisementID == id).FirstOrDefault();
-            var jobSkill = _context.JobSkillEntities.Where(item => item.JobAdvertisementID == id).ToList();
+            var jobSkill = _context.JobSkillEntities.Where(item => item.JobAdvertisementID == id).Join(
+                _context.SkillEntities,
+                userSkill => userSkill.SkillID,
+                skill => skill.SkillID,
+                (userSkill, skill) => new JobSkillDTO
+                {
+                    JobSkillID = userSkill.JobSkillID,
+                    Experience = userSkill.Experience,
+                    JobAdvertisementID = userSkill.JobAdvertisementID,
+                    Name = skill.Name
+                }
+                ).ToList();
 
             if (jobSkill == null || jobAdd == null)
             {
                 throw new KeyNotFoundException();
             }
-            var mapped = _mapper.Map<IList<JobSkillDTO>>(jobSkill);
-            return mapped;
+
+            return jobSkill;
         }
 
         public void UpdateJobSkill(Guid companyId, Guid jobAddId, Guid id, JobSkillDTO skill)

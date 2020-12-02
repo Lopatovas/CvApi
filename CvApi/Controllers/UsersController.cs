@@ -77,7 +77,8 @@ namespace CvApi.Controllers
                 user.Email,
                 FirstName = user.Name,
                 LastName = user.Surname,
-                Token = tokenString
+                Token = tokenString,
+                Role = user.Role,
             });
         }
 
@@ -227,7 +228,7 @@ namespace CvApi.Controllers
         {
             experience.UserID = id;
             _userExperienceService.CreateExperience(experience);
-            return CreatedAtAction("GetUserExperience", new { id = experience.UserID, experienceId = experience.ExperienceID }, experience);
+            return CreatedAtAction("GetUserExperiences", new { id = experience.UserID }, experience);
         }
 
         [HttpPut("{id}/experiences/{experienceId}")]

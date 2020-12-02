@@ -8,5 +8,7 @@ namespace CvApi.Models.DataTransferObject
         public double Experience { get; set; }
         public Guid SkillID { get; set; }
         public Guid? UserID { get; set; }
+
+        public string Name { get; set; }
     }
 }

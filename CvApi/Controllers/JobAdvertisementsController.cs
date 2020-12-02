@@ -45,7 +45,7 @@ namespace CvApi.Controllers
         }
 
         [HttpPost("{id}/Apply")]
-        [Authorize(Policy = "User")]
+        [Authorize(Policy = "Users")]
         public IActionResult Apply(Guid id, ApplicationDTO application)
         {
             try

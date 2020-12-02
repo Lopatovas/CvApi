@@ -163,6 +163,7 @@ namespace CvApi.Controllers
         }
 
         [HttpGet("{id}/JobAdvertisements/{jobAdId}/JobSkills")]
+        [AllowAnonymous]
         public IActionResult GetCompanyJobSkills(Guid id, Guid jobAdId)
         {
             try

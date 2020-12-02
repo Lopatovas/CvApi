@@ -89,6 +89,7 @@ namespace CvApi.Services.UserService
             user.Surname = userParam.Surname;
             user.Description = userParam.Description;
             user.Phone = userParam.Phone;
+            user.CompanyID = userParam.CompanyID;
 
             // update password if it was entered
             if (!string.IsNullOrWhiteSpace(password))

@@ -55,9 +55,20 @@ namespace CvApi.Services.UserSkillsService
 
         public IList<UserSkillDTO> GetUserSkills(Guid id)
         {
-            var response = _context.UserSkillEntities.Where(item => item.UserID == id).ToList();
-            var mapped = _mapper.Map<IList<UserSkillDTO>>(response);
-            return mapped;
+            var response = _context.UserSkillEntities.Where(item => item.UserID == id).Join(
+                _context.SkillEntities,
+                userSkill => userSkill.SkillID,
+                skill => skill.SkillID,
+                (userSkill, skill) => new UserSkillDTO
+                {
+                    UserSkillID = userSkill.UserSkillID,
+                    Experience = userSkill.Experience,
+                    UserID = userSkill.UserID,
+                    Name = skill.Name
+                }
+                ).ToList();
+
+            return response;
         }
 
         public void UpdateSkill(Guid id, UserSkillDTO userSkill)
