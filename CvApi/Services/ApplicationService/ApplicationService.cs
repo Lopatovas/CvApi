@@ -51,14 +51,28 @@ namespace CvApi.Services.ApplicationService
         public IList<ApplicationDTO> GetApplicants(Guid companyId, Guid jobAddId)
         {
             var jobAdd = _context.JobAdvertisementEntities.Where(item => item.CompanyID == companyId && item.JobAdvertisementID == jobAddId).FirstOrDefault();
-            var applicants = _context.ApplicationEntities.Where(item => item.JobAdvertisementID == jobAdd.JobAdvertisementID).ToList();
+            var applicants = _context.ApplicationEntities
+                    .Where(item => item.JobAdvertisementID == jobAdd.JobAdvertisementID)
+                    .Join(
+                        _context.UserEntities,
+                        application => application.UserID,
+                        user => user.UserID,
+                        (application, user) => new ApplicationDTO
+                        {
+                            ApplicationID = application.ApplicationID,
+                            UserID = application.UserID,
+                            Username = $"{user.Name} {user.Surname}",
+                            JobAdvertisementID = application.JobAdvertisementID,
+                            CreatedAt = application.CreatedAt,
+                            Status = application.Status,
+                        })
+                    .ToList();
 
             if (applicants == null || jobAdd == null)
             {
                 throw new KeyNotFoundException();
             }
-            var mapped = _mapper.Map<IList<ApplicationDTO>>(applicants);
-            return mapped;
+            return applicants;
         }
 
         public IList<ApplicationDTO> GetApplications(Guid userId)
